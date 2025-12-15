@@ -11,7 +11,7 @@ The following notes describe how to compile and use the software.
 First, install **parPE 0.7.0**, as it provides the C implementation of the cost
 function used by SaCeSS.
 
-You must apply the parPE patch available in the patch/ folder of this repository,
+You must apply the parPE patch available in the **parpe_patch/** folder of this repository,
 as it includes the modifications required to integrate SaCeSS with PEtab benchmarks.
 
 Once parPE is installed, modify the SaCeSS `Makefile` to point to the

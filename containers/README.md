@@ -1,14 +1,21 @@
-# Containers on the FT3 Supercomputers
+# Containers on HPC Infrastructures
 
-## Specifications
+## System Specifications
 
+As an example, we refer to the FINISTERRAE III (FT3) supercomputer operated by CESGA (Galicia Supercomputing Center).
+
+Detailed hardware and system specifications are available at:
 https://www.cesga.es/en/infrastructures/computing/
 
-## Download image
+## Download image 
 
 https://drive.google.com/file/d/1X-w_WrfAHNYtsaquR0LkyUFfh6JU6DfY/view?usp=sharing
 
-## Example Job: job_example.sh
+## Build the image from the Dockerfile
+
+TBD
+
+## Example Job using singularity: job_example.sh
 
 $1 -> /home/sacess_parpe/containers -> container path
 

@@ -1,0 +1,8 @@
+#define dsusceptibledt xdot[0]
+#define dexposeddt xdot[1]
+#define dasymptomaticdt xdot[2]
+#define dsymptomaticdt xdot[3]
+#define ddetecteddt xdot[4]
+#define drecovereddt xdot[5]
+#define ddeceaseddt xdot[6]
+#define ddetected_cumulativedt xdot[7]

@@ -1,0 +1,133 @@
+#include "amici/symbolic_functions.h"
+#include "amici/defines.h"
+#include "sundials/sundials_types.h"
+
+#include <gsl/gsl-lite.hpp>
+#include <algorithm>
+
+#include "x.h"
+#include "p.h"
+#include "k.h"
+#include "w.h"
+
+namespace amici {
+namespace model_Laske_PLOSComputBiol2019 {
+
+void w_Laske_PLOSComputBiol2019(realtype *w, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *tcl, const realtype *spl, bool include_static){
+    // static expressions
+    if (include_static) {
+        ModelValue_101 = N_P_RdRp;  // w[0]
+        ModelValue_102 = N_P_HA;  // w[1]
+        ModelValue_103 = N_P_M1;  // w[2]
+        ModelValue_104 = N_P_NA;  // w[3]
+        ModelValue_105 = N_P_NEP;  // w[4]
+        ModelValue_106 = N_P_NP;  // w[5]
+        ModelValue_107 = K_V_rel;  // w[6]
+        ModelValue_108 = F_Spl7;  // w[7]
+        ModelValue_111 = F_Spl8;  // w[8]
+        ModelValue_113 = N_P_M2;  // w[9]
+        ModelValue_114 = K_eq_Hi;  // w[10]
+        ModelValue_115 = K_eq_Lo;  // w[11]
+        ModelValue_116 = F_fus;  // w[12]
+        ModelValue_63 = k_att_Hi;  // w[13]
+        ModelValue_64 = k_att_Lo;  // w[14]
+        ModelValue_69 = k_fus;  // w[15]
+        ModelValue_79 = k_syn_R_M;  // w[16]
+        ModelValue_80 = k_syn_P;  // w[17]
+        ModelValue_82 = D_rib;  // w[18]
+        ModelValue_84 = L1;  // w[19]
+        ModelValue_85 = L2;  // w[20]
+        ModelValue_86 = L3;  // w[21]
+        ModelValue_87 = L4;  // w[22]
+        ModelValue_88 = L5;  // w[23]
+        ModelValue_89 = L6;  // w[24]
+        ModelValue_90 = L7;  // w[25]
+        ModelValue_91 = L8;  // w[26]
+        KmB = ModelValue_101*ModelValue_107;  // w[32]
+        KmC = ModelValue_102*ModelValue_107;  // w[33]
+        KmD = ModelValue_106*ModelValue_107;  // w[34]
+        KmE = ModelValue_104*ModelValue_107;  // w[35]
+        KmF = ModelValue_103*ModelValue_107;  // w[36]
+        KmG = ModelValue_107*ModelValue_113;  // w[37]
+        KmH = ModelValue_105*ModelValue_107;  // w[38]
+        k_deg_end = ModelValue_69*(1 - ModelValue_116)/ModelValue_116;  // w[41]
+        k_dis_Hi = ModelValue_63/ModelValue_114;  // w[42]
+        k_dis_Lo = ModelValue_64/ModelValue_115;  // w[43]
+        k_syn_P_M1_rel = ModelValue_80*(1 - ModelValue_108)/ModelValue_82;  // w[44]
+        k_syn_P_M2_rel = ModelValue_108*ModelValue_80/ModelValue_82;  // w[45]
+        k_syn_P_NEP_rel = ModelValue_111*ModelValue_80/ModelValue_82;  // w[46]
+        k_syn_P_rel = ModelValue_80/ModelValue_82;  // w[47]
+        k_syn_R_M1_rel = (1.0/8.0)*ModelValue_79/ModelValue_84;  // w[48]
+        k_syn_R_M2_rel = (1.0/8.0)*ModelValue_79/ModelValue_85;  // w[49]
+        k_syn_R_M3_rel = (1.0/8.0)*ModelValue_79/ModelValue_86;  // w[50]
+        k_syn_R_M4_rel = (1.0/8.0)*ModelValue_79/ModelValue_87;  // w[51]
+        k_syn_R_M5_rel = (1.0/8.0)*ModelValue_79/ModelValue_88;  // w[52]
+        k_syn_R_M6_rel = (1.0/8.0)*ModelValue_79/ModelValue_89;  // w[53]
+        k_syn_R_M7_rel = (1.0/8.0)*ModelValue_79/ModelValue_90;  // w[54]
+        k_syn_R_M8_rel = (1.0/8.0)*ModelValue_79/ModelValue_91;  // w[55]
+    }
+
+    // dynamic expressions
+    RNP_cyt = 8*V_end + Vp_cyt + Vp_cyt_M1;  // w[27]
+    RNP_nuc = Vp_nuc + Vp_nuc_M1;  // w[28]
+    R_C_total_0 = Cp + R_C + R_C_RdRp;  // w[29]
+    R_V_total_0 = R_V + 8*V_att_Hi + 8*V_att_Lo + 8*V_end + Vp_cyt + Vp_cyt_M1 + Vp_nuc + Vp_nuc_M1;  // w[30]
+    F_rnp_nuc = 100*RNP_nuc/(RNP_cyt + RNP_nuc);  // w[31]
+    R_C_seg_tot = (1.0/8.0)*R_C_total_0;  // w[39]
+    R_V_seg_tot = (1.0/8.0)*R_V_total_0;  // w[40]
+    flux_V_ex_Virion_attachment_Hi = 1.0*B_att_Hi*V_ex*k_att_Hi;  // w[56]
+    flux_V_att_Hi_Dissociation_virion = 1.0*V_att_Hi*k_dis_Hi;  // w[57]
+    flux_V_att_Hi_Endocytosis_virion = 1.0*V_att_Hi*k_end;  // w[58]
+    flux_V_end_Degradation = 1.0*V_end*k_deg_end;  // w[59]
+    flux_V_end_Fusion_and_release = 1.0*V_end*k_fus;  // w[60]
+    flux_V_cyt_Import = 1.0*Vp_cyt*k_imp;  // w[61]
+    flux_R_C_Synthesis = 1.0*Vp_nuc*k_syn_R_C;  // w[62]
+    flux_R_C_Degradation = 1.0*R_C*k_deg_R;  // w[63]
+    flux_R_C_binding_of_RdRp = 1.0*P_RdRp*R_C*k_bind_RdRp;  // w[64]
+    flux_R_C_RdRp_Degradation = 1.0*R_C_RdRp*k_deg_R_RdRp;  // w[65]
+    flux_C_P_synthesis = 1.0*P_NP*R_C_RdRp*k_bind_NP;  // w[66]
+    flux_R_V_synthesis = 1.0*Cp*k_syn_R_V;  // w[67]
+    flux_C_P_degradation = 1.0*Cp*k_deg_Rnp;  // w[68]
+    flux_R_V_binding_of_RdRp = 1.0*P_RdRp*R_V*k_bind_RdRp;  // w[69]
+    flux_R_V_degradation = 1.0*R_V*k_deg_R;  // w[70]
+    flux_Vp_nuc_synthesis = 1.0*P_NP*R_V_RdRp*k_bind_NP;  // w[71]
+    flux_Vp_nuc_degradation = 1.0*Vp_nuc*k_deg_Rnp;  // w[72]
+    flux_R_M1_synthesis = 1.0*Vp_nuc*k_syn_R_M1_rel;  // w[73]
+    flux_R_M2_synthesis = 1.0*Vp_nuc*k_syn_R_M2_rel;  // w[74]
+    flux_R_M3_synthesis = 1.0*Vp_nuc*k_syn_R_M3_rel;  // w[75]
+    flux_R_M4_synthesis = 1.0*Vp_nuc*k_syn_R_M4_rel;  // w[76]
+    flux_R_M5_synthesis = 1.0*Vp_nuc*k_syn_R_M5_rel;  // w[77]
+    flux_R_M6_synthesis = 1.0*Vp_nuc*k_syn_R_M6_rel;  // w[78]
+    flux_R_M7_synthesis = 1.0*Vp_nuc*k_syn_R_M7_rel;  // w[79]
+    flux_R_M8_synthesis = 1.0*Vp_nuc*k_syn_R_M8_rel;  // w[80]
+    flux_P_B1_synthesis = 1.0*R_M2*k_syn_P_rel;  // w[81]
+    flux_P_B2_synthesis = 1.0*R_M1*k_syn_P_rel;  // w[82]
+    flux_P_PA_synthesis = 1.0*R_M3*k_syn_P_rel;  // w[83]
+    flux_P_HA_synthesis = 1.0*R_M4*k_syn_P_rel;  // w[84]
+    flux_P_NP_synthesis = 1.0*R_M5*k_syn_P_rel;  // w[85]
+    flux_P_NA_synthesis = 1.0*R_M6*k_syn_P_rel;  // w[86]
+    flux_P_M1_synthesis = 1.0*R_M7*k_syn_P_M1_rel;  // w[87]
+    flux_P_NEP_synthesis = 1.0*R_M8*k_syn_P_NEP_rel;  // w[88]
+    flux_R_M1_degradation = 1.0*R_M1*k_deg_R_M;  // w[89]
+    flux_R_M2_degradation = 1.0*R_M2*k_deg_R_M;  // w[90]
+    flux_R_M3_degradation = 1.0*R_M3*k_deg_R_M;  // w[91]
+    flux_R_M4_degradation = 1.0*R_M4*k_deg_R_M;  // w[92]
+    flux_R_M5_degradation = 1.0*R_M5*k_deg_R_M;  // w[93]
+    flux_R_M6_degradation = 1.0*R_M6*k_deg_R_M;  // w[94]
+    flux_R_M7_degradation = 1.0*R_M7*k_deg_R_M;  // w[95]
+    flux_R_M8_degradation = 1.0*R_M8*k_deg_R_M;  // w[96]
+    flux_P_RdRp_complex_formation = 1.0*P_B1*P_B2*P_PA*k_RdRp;  // w[97]
+    flux_Vp_nuc_binding_of_P_M1 = 1.0*P_M1*Vp_nuc*k_bind_M1;  // w[98]
+    flux_Vp_nuc_M1_export = 1.0*P_NEP*Vp_nuc_M1*k_exp_Vp_nuc_M1;  // w[99]
+    flux_Vp_cyt_M1_Virion_release = 1.0*P_HA*P_M1*P_M2*P_NA*P_NEP*P_NP*P_RdRp*Vp_cyt_M1*k_rel/((KmB + P_RdRp)*(KmC + P_HA)*(KmD + P_NP)*(KmE + P_NA)*(KmF + P_M1)*(KmG + P_M2)*(KmH + P_NEP));  // w[100]
+    flux_V_ex_Virion_attachment_Lo = 1.0*B_att_Lo*V_ex*k_att_Lo;  // w[101]
+    flux_P_M2_synthesis = 1.0*R_M7*k_syn_P_M2_rel;  // w[102]
+    flux_V_att_Lo_Dissociation_virion = 1.0*V_att_Lo*k_dis_Lo;  // w[103]
+    flux_V_att_Lo_Endocytosis_virion = 1.0*V_att_Lo*k_end;  // w[104]
+    flux_Vp_nuc_M1_degradation = 1.0*Vp_nuc_M1*k_deg_Rnp;  // w[105]
+    flux_R_V_RdRp_degradation = 1.0*R_V_RdRp*k_deg_R_RdRp;  // w[106]
+    flux_Vp_cyt_M1_degradation = 1.0*Vp_cyt_M1*k_deg_Rnp;  // w[107]
+}
+
+} // namespace model_Laske_PLOSComputBiol2019
+} // namespace amici

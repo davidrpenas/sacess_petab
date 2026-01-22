@@ -1,0 +1,7 @@
+#define dsusceptibledt xdot[0]
+#define dinfected_normaldt xdot[1]
+#define dinfected_moderatedt xdot[2]
+#define dinfected_weakdt xdot[3]
+#define dtreated_normaldt xdot[4]
+#define dtreated_moderatedt xdot[5]
+#define dtreated_weakdt xdot[6]

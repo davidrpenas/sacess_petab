@@ -1,0 +1,5 @@
+#define ERK_total k[0]
+#define MEK_total k[1]
+#define RAF_total k[2]
+#define Sorafenib k[3]
+#define UO126 k[4]

@@ -1,0 +1,6 @@
+#define IPR_O x[0]
+#define IPR_R x[1]
+#define IPR_I1 x[2]
+#define IPR_S x[3]
+#define IPR_A x[4]
+#define IPR_I2 x[5]

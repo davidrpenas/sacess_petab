@@ -1,0 +1,5 @@
+#define dflux_v5_v_4_du2 dwdw[0]
+#define dflux_v11_v_10_du3 dwdw[1]
+#define dflux_v18_v_17_du4 dwdw[2]
+#define dflux_v2_v_1_du5 dwdw[3]
+#define dflux_v3_v_2_du6 dwdw[4]

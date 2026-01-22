@@ -1,0 +1,8 @@
+#define dJy0_dobservable_CD274mRNA dJydy[0]
+#define dJy0_dobservable_IL13_cell_1 dJydy[1]
+#define dJy0_dobservable_RecSurf_2 dJydy[2]
+#define dJy0_dobservable_SOCS3_3 dJydy[3]
+#define dJy0_dobservable_SOCS3mRNA_4 dJydy[4]
+#define dJy0_dobservable_pIL4Ra_5 dJydy[5]
+#define dJy0_dobservable_pJAK2_6 dJydy[6]
+#define dJy0_dobservable_pSTAT5_7 dJydy[7]

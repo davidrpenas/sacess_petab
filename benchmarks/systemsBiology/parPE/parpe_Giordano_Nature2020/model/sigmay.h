@@ -1,0 +1,7 @@
+#define sigma_observable_TotalCases sigmay[0]
+#define sigma_observable_Deaths sigmay[1]
+#define sigma_observable_Recovered sigmay[2]
+#define sigma_observable_CurrentCases sigmay[3]
+#define sigma_observable_DiagHome sigmay[4]
+#define sigma_observable_Hospit sigmay[5]
+#define sigma_observable_ICU sigmay[6]

@@ -1,0 +1,7 @@
+#define dflux_R3_dCer dwdx[0]
+#define dflux_R5_dCer dwdx[1]
+#define dflux_R4_dSphingo dwdx[2]
+#define dflux_R6_dSphingo dwdx[3]
+#define dflux_R7_dS1P dwdx[4]
+#define dflux_R8_dS1P dwdx[5]
+#define dflux_R2_dSphinga dwdx[6]

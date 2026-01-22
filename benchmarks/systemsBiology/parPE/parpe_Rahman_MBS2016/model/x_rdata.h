@@ -1,0 +1,7 @@
+#define susceptible x_rdata[0]
+#define infected_normal x_rdata[1]
+#define infected_moderate x_rdata[2]
+#define infected_weak x_rdata[3]
+#define treated_normal x_rdata[4]
+#define treated_moderate x_rdata[5]
+#define treated_weak x_rdata[6]

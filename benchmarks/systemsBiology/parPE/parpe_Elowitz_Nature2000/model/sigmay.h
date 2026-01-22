@@ -1,0 +1,1 @@
+#define sigma_fluorescence sigmay[0]

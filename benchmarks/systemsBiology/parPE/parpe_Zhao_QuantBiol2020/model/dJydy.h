@@ -1,0 +1,5 @@
+#define dJy0_dobservable_confirmed_infected dJydy[0]
+#define dJy0_dobservable_susceptible_1 dJydy[1]
+#define dJy0_dobservable_unquarantined_infected_2 dJydy[2]
+#define dJy0_dobservable_quarantined_infected_3 dJydy[3]
+#define dJy0_dobservable_cumulative_infected_4 dJydy[4]

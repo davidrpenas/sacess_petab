@@ -1,0 +1,3 @@
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Fujita_SciSignal2010/Fujita_SciSignal2010/./Fujita_SciSignal2010.py
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Fujita_SciSignal2010/Fujita_SciSignal2010/./_Fujita_SciSignal2010.cpython-310-x86_64-linux-gnu.so
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Fujita_SciSignal2010/Fujita_SciSignal2010/lib64/libFujita_SciSignal2010.a

@@ -1,0 +1,6 @@
+#define RAF x_rdata[0]
+#define pRAF x_rdata[1]
+#define MEK x_rdata[2]
+#define pMEK x_rdata[3]
+#define ERK x_rdata[4]
+#define pERK x_rdata[5]

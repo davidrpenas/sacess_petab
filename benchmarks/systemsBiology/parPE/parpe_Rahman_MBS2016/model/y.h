@@ -1,0 +1,1 @@
+#define observable_prevalence y[0]

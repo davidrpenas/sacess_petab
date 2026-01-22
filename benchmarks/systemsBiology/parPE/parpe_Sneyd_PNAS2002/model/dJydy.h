@@ -1,0 +1,1 @@
+#define dJy0_dopen_probability dJydy[0]

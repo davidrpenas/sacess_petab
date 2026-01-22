@@ -1,0 +1,8 @@
+#define dflux_reaction1_dBac dwdx[0]
+#define dflux_reaction2_dBac dwdx[1]
+#define dflux_reaction3_dBac dwdx[2]
+#define dflux_reaction2_dGlu dwdx[3]
+#define dflux_reaction3_dGlu dwdx[4]
+#define dflux_reaction3_dcGlu dwdx[5]
+#define dflux_reaction4_dcGlu dwdx[6]
+#define dflux_reaction4_dInd dwdx[7]

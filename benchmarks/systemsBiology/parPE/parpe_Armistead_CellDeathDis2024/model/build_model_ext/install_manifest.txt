@@ -1,0 +1,3 @@
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Armistead_CellDeathDis2024/Armistead_CellDeathDis2024/./Armistead_CellDeathDis2024.py
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Armistead_CellDeathDis2024/Armistead_CellDeathDis2024/./_Armistead_CellDeathDis2024.cpython-310-x86_64-linux-gnu.so
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Armistead_CellDeathDis2024/Armistead_CellDeathDis2024/lib64/libArmistead_CellDeathDis2024.a

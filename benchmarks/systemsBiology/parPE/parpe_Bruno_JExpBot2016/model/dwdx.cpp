@@ -1,0 +1,70 @@
+#include "amici/sundials_matrix_wrapper.h"
+#include "sundials/sundials_types.h"
+
+#include <array>
+#include <algorithm>
+
+namespace amici {
+namespace model_Bruno_JExpBot2016 {
+
+static constexpr std::array<sunindextype, 8> dwdx_colptrs_Bruno_JExpBot2016_ = {
+    0, 1, 3, 4, 4, 5, 5, 6
+};
+
+void dwdx_colptrs_Bruno_JExpBot2016(SUNMatrixWrapper &dwdx){
+    dwdx.set_indexptrs(gsl::make_span(dwdx_colptrs_Bruno_JExpBot2016_));
+}
+} // namespace model_Bruno_JExpBot2016
+} // namespace amici
+
+#include "amici/sundials_matrix_wrapper.h"
+#include "sundials/sundials_types.h"
+
+#include <array>
+#include <algorithm>
+
+namespace amici {
+namespace model_Bruno_JExpBot2016 {
+
+static constexpr std::array<sunindextype, 6> dwdx_rowvals_Bruno_JExpBot2016_ = {
+    0, 2, 3, 1, 4, 5
+};
+
+void dwdx_rowvals_Bruno_JExpBot2016(SUNMatrixWrapper &dwdx){
+    dwdx.set_indexvals(gsl::make_span(dwdx_rowvals_Bruno_JExpBot2016_));
+}
+} // namespace model_Bruno_JExpBot2016
+} // namespace amici
+
+
+
+
+#include "amici/symbolic_functions.h"
+#include "amici/defines.h"
+#include "sundials/sundials_types.h"
+
+#include <gsl/gsl-lite.hpp>
+#include <algorithm>
+
+#include "x.h"
+#include "p.h"
+#include "w.h"
+#include "dwdx.h"
+
+namespace amici {
+namespace model_Bruno_JExpBot2016 {
+
+void dwdx_Bruno_JExpBot2016(realtype *dwdx, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w, const realtype *tcl, const realtype *spl, bool include_static){
+    // static expressions
+    if (include_static) {
+        dflux_v1_ReactionName_dbcar = 1.0*kb1*kb1_multiplier;  // dwdx[0]
+        dflux_v3_ReactionName_dbcry = 1.0*kc1*kc1_multiplier;  // dwdx[1]
+        dflux_v4_ReactionName_dbcry = 1.0*kc2*kc2_multiplier;  // dwdx[2]
+        dflux_v2_ReactionName_db10 = 1.0*kb2*kb2_multiplier;  // dwdx[3]
+        dflux_v5_ReactionName_dohb10 = 1.0*kc4*kc4_multiplier;  // dwdx[4]
+        dflux_v6_ReactionName_dzea = 1.0*k5*k5_multiplier;  // dwdx[5]
+    }
+}
+
+} // namespace model_Bruno_JExpBot2016
+} // namespace amici

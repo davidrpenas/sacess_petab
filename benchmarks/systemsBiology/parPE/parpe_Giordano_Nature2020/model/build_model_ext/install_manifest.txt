@@ -1,0 +1,3 @@
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Giordano_Nature2020/Giordano_Nature2020/./Giordano_Nature2020.py
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Giordano_Nature2020/Giordano_Nature2020/./_Giordano_Nature2020.cpython-310-x86_64-linux-gnu.so
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Giordano_Nature2020/Giordano_Nature2020/lib64/libGiordano_Nature2020.a

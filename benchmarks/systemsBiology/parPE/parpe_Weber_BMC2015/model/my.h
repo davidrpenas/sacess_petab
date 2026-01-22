@@ -1,0 +1,8 @@
+#define myCERTpRN24 my[0]
+#define myCERTt my[1]
+#define myPI4K3BpRN24 my[2]
+#define myPI4K3Bt my[3]
+#define myPKDpN0 my[4]
+#define myPKDpN24 my[5]
+#define myPKDpN25 my[6]
+#define myPKDt my[7]

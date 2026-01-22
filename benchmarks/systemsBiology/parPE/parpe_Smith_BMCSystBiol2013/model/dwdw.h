@@ -1,0 +1,5 @@
+#define dFoxo1_all_dcytoplasm_Foxo1_tot dwdw[0]
+#define dFoxo1_all_ddnabound_Foxo1_tot dwdw[1]
+#define dflux_R37f_dk_ros_perm dwdw[2]
+#define dflux_R37r_dk_ros_perm dwdw[3]
+#define dFoxo1_all_dnucleus_Foxo1_tot dwdw[4]

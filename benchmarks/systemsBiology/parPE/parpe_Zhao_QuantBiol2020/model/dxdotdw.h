@@ -1,0 +1,6 @@
+#define ddSusceptibledt_dflux_Susceptible_to_Unquarantined dxdotdw[0]
+#define ddUnquarantined_Infecteddt_dflux_Susceptible_to_Unquarantined dxdotdw[1]
+#define ddUnquarantined_Infecteddt_dflux_Unquarantined_to_Quarantined dxdotdw[2]
+#define ddQuarantined_Infecteddt_dflux_Unquarantined_to_Quarantined dxdotdw[3]
+#define ddQuarantined_Infecteddt_dflux_Quarantined_to_Confirmed dxdotdw[4]
+#define ddConfirmed_Infecteddt_dflux_Quarantined_to_Confirmed dxdotdw[5]

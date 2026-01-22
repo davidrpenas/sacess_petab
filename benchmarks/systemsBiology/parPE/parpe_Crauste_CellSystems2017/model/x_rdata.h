@@ -1,0 +1,5 @@
+#define Naive x_rdata[0]
+#define EarlyEffector x_rdata[1]
+#define LateEffector x_rdata[2]
+#define Memory x_rdata[3]
+#define Pathogen x_rdata[4]

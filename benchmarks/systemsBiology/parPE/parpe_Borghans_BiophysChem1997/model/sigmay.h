@@ -1,0 +1,1 @@
+#define sigma_Ca sigmay[0]

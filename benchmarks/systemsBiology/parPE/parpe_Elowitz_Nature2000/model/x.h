@@ -1,0 +1,8 @@
+#define X_protein x[0]
+#define Y_protein x[1]
+#define Z_protein x[2]
+#define GFP x[3]
+#define X_mRNA x[4]
+#define Y_mRNA x[5]
+#define Z_mRNA x[6]
+#define GFP_mRNA x[7]

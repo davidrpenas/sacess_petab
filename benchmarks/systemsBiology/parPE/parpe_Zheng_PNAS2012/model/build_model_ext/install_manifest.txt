@@ -1,0 +1,3 @@
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Zheng_PNAS2012/Zheng_PNAS2012/./Zheng_PNAS2012.py
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Zheng_PNAS2012/Zheng_PNAS2012/./_Zheng_PNAS2012.cpython-310-x86_64-linux-gnu.so
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Zheng_PNAS2012/Zheng_PNAS2012/lib64/libZheng_PNAS2012.a

@@ -1,0 +1,5 @@
+#define Naive x[0]
+#define EarlyEffector x[1]
+#define LateEffector x[2]
+#define Memory x[3]
+#define Pathogen x[4]

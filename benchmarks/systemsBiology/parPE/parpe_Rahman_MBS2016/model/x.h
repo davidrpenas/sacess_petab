@@ -1,0 +1,7 @@
+#define susceptible x[0]
+#define infected_normal x[1]
+#define infected_moderate x[2]
+#define infected_weak x[3]
+#define treated_normal x[4]
+#define treated_moderate x[5]
+#define treated_weak x[6]

@@ -1,0 +1,1 @@
+#define sigma_open_probability sigmay[0]

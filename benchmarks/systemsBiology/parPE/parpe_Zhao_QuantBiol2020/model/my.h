@@ -1,0 +1,5 @@
+#define mobservable_confirmed_infected my[0]
+#define mobservable_susceptible my[1]
+#define mobservable_unquarantined_infected my[2]
+#define mobservable_quarantined_infected my[3]
+#define mobservable_cumulative_infected my[4]

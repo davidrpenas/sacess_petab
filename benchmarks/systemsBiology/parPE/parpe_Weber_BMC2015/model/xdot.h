@@ -1,0 +1,7 @@
+#define dPKDdt xdot[0]
+#define dPKDDAGadt xdot[1]
+#define dPI4K3Bdt xdot[2]
+#define dPI4K3Badt xdot[3]
+#define dCERTERadt xdot[4]
+#define dCERTdt xdot[5]
+#define dCERTTGNadt xdot[6]

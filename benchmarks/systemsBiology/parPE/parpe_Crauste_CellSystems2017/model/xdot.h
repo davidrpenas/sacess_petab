@@ -1,0 +1,5 @@
+#define dNaivedt xdot[0]
+#define dEarlyEffectordt xdot[1]
+#define dLateEffectordt xdot[2]
+#define dMemorydt xdot[3]
+#define dPathogendt xdot[4]

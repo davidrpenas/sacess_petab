@@ -1,0 +1,6 @@
+#define IPR_O x_rdata[0]
+#define IPR_R x_rdata[1]
+#define IPR_I1 x_rdata[2]
+#define IPR_S x_rdata[3]
+#define IPR_A x_rdata[4]
+#define IPR_I2 x_rdata[5]

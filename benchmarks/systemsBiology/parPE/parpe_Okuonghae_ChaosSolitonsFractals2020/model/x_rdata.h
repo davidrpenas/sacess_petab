@@ -1,0 +1,8 @@
+#define susceptible x_rdata[0]
+#define exposed x_rdata[1]
+#define asymptomatic x_rdata[2]
+#define symptomatic x_rdata[3]
+#define detected x_rdata[4]
+#define recovered x_rdata[5]
+#define deceased x_rdata[6]
+#define detected_cumulative x_rdata[7]

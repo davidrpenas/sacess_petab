@@ -1,0 +1,3 @@
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Zhao_QuantBiol2020/Zhao_QuantBiol2020/./Zhao_QuantBiol2020.py
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Zhao_QuantBiol2020/Zhao_QuantBiol2020/./_Zhao_QuantBiol2020.cpython-310-x86_64-linux-gnu.so
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Zhao_QuantBiol2020/Zhao_QuantBiol2020/lib64/libZhao_QuantBiol2020.a

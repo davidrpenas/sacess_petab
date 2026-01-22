@@ -1,0 +1,1 @@
+#define S_on k[0]

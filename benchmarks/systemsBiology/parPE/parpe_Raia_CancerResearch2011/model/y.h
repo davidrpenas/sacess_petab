@@ -1,0 +1,8 @@
+#define observable_CD274mRNA y[0]
+#define observable_IL13_cell y[1]
+#define observable_RecSurf y[2]
+#define observable_SOCS3 y[3]
+#define observable_SOCS3mRNA y[4]
+#define observable_pIL4Ra y[5]
+#define observable_pJAK2 y[6]
+#define observable_pSTAT5 y[7]

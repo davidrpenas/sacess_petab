@@ -1,0 +1,6 @@
+#define dIPR_Odt xdot[0]
+#define dIPR_Rdt xdot[1]
+#define dIPR_I1dt xdot[2]
+#define dIPR_Sdt xdot[3]
+#define dIPR_Adt xdot[4]
+#define dIPR_I2dt xdot[5]

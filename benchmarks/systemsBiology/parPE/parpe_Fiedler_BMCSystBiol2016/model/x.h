@@ -1,0 +1,6 @@
+#define RAF x[0]
+#define pRAF x[1]
+#define MEK x[2]
+#define pMEK x[3]
+#define ERK x[4]
+#define pERK x[5]

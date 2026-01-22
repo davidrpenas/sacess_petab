@@ -1,0 +1,3 @@
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Bertozzi_PNAS2020/Bertozzi_PNAS2020/./Bertozzi_PNAS2020.py
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Bertozzi_PNAS2020/Bertozzi_PNAS2020/./_Bertozzi_PNAS2020.cpython-310-x86_64-linux-gnu.so
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Bertozzi_PNAS2020/Bertozzi_PNAS2020/lib64/libBertozzi_PNAS2020.a

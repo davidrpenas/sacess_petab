@@ -1,0 +1,1 @@
+#define dJy0_dobservable_prevalence dJydy[0]

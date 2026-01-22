@@ -1,0 +1,7 @@
+#define dbcardt xdot[0]
+#define dbcrydt xdot[1]
+#define db10dt xdot[2]
+#define dbiodt xdot[3]
+#define dohb10dt xdot[4]
+#define dohbiodt xdot[5]
+#define dzeadt xdot[6]

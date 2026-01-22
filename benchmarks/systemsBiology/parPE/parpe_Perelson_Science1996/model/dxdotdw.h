@@ -1,0 +1,8 @@
+#define ddTstardt_dflux_v1 dxdotdw[0]
+#define ddTstardt_dflux_v2 dxdotdw[1]
+#define ddVdt_dflux_v3 dxdotdw[2]
+#define ddVindt_dflux_v3 dxdotdw[3]
+#define ddVdt_dflux_v4 dxdotdw[4]
+#define ddVnidt_dflux_v4 dxdotdw[5]
+#define ddVdt_dflux_v5 dxdotdw[6]
+#define ddVnidt_dflux_v5 dxdotdw[7]

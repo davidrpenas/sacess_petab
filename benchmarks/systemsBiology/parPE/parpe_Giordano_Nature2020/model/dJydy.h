@@ -1,0 +1,7 @@
+#define dJy0_dobservable_TotalCases dJydy[0]
+#define dJy0_dobservable_Deaths_1 dJydy[1]
+#define dJy0_dobservable_Recovered_2 dJydy[2]
+#define dJy0_dobservable_CurrentCases_3 dJydy[3]
+#define dJy0_dobservable_DiagHome_4 dJydy[4]
+#define dJy0_dobservable_Hospit_5 dJydy[5]
+#define dJy0_dobservable_ICU_6 dJydy[6]

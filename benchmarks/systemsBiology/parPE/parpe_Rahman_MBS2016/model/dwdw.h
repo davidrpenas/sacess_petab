@@ -1,0 +1,4 @@
+#define dforce_of_infection_dinfected_normal_transmission_rate dwdw[0]
+#define dforce_of_infection_dinfected_weak_transmission_rate dwdw[1]
+#define dforce_of_infection_dtreated_transmission_rate dwdw[2]
+#define dflux_v2_dforce_of_infection dwdw[3]

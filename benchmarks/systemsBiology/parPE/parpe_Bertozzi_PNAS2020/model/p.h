@@ -1,0 +1,5 @@
+#define gamma_ p[0]
+#define I0_ p[1]
+#define R0_ p[2]
+#define sd_I_NY p[3]
+#define sd_I_CA p[4]

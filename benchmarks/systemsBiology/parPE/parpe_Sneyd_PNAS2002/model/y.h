@@ -1,0 +1,1 @@
+#define open_probability y[0]

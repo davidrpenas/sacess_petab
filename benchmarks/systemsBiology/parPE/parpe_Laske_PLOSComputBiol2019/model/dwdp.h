@@ -1,0 +1,6 @@
+#define dflux_V_cyt_Import_dk_imp dwdp[0]
+#define dflux_R_C_Synthesis_dk_syn_R_C dwdp[1]
+#define dflux_Vp_nuc_binding_of_P_M1_dk_bind_M1 dwdp[2]
+#define dModelValue_79_dk_syn_R_M dwdp[3]
+#define dflux_Vp_cyt_M1_Virion_release_dk_rel dwdp[4]
+#define dflux_R_V_synthesis_dk_syn_R_V dwdp[5]

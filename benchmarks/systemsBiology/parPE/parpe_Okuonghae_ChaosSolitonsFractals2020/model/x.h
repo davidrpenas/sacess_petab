@@ -1,0 +1,8 @@
+#define susceptible x[0]
+#define exposed x[1]
+#define asymptomatic x[2]
+#define symptomatic x[3]
+#define detected x[4]
+#define recovered x[5]
+#define deceased x[6]
+#define detected_cumulative x[7]

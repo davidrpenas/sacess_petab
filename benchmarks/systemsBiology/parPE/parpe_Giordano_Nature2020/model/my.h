@@ -1,0 +1,7 @@
+#define mobservable_TotalCases my[0]
+#define mobservable_Deaths my[1]
+#define mobservable_Recovered my[2]
+#define mobservable_CurrentCases my[3]
+#define mobservable_DiagHome my[4]
+#define mobservable_Hospit my[5]
+#define mobservable_ICU my[6]

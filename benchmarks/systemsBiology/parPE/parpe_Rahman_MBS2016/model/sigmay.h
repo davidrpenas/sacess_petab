@@ -1,0 +1,1 @@
+#define sigma_observable_prevalence sigmay[0]

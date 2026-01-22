@@ -1,0 +1,1 @@
+#define dJy0_dfluorescence dJydy[0]

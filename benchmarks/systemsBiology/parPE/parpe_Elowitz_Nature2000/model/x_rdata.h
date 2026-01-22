@@ -1,0 +1,8 @@
+#define X_protein x_rdata[0]
+#define Y_protein x_rdata[1]
+#define Z_protein x_rdata[2]
+#define GFP x_rdata[3]
+#define X_mRNA x_rdata[4]
+#define Y_mRNA x_rdata[5]
+#define Z_mRNA x_rdata[6]
+#define GFP_mRNA x_rdata[7]

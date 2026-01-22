@@ -1,0 +1,7 @@
+#define observable_TotalCases y[0]
+#define observable_Deaths y[1]
+#define observable_Recovered y[2]
+#define observable_CurrentCases y[3]
+#define observable_DiagHome y[4]
+#define observable_Hospit y[5]
+#define observable_ICU y[6]

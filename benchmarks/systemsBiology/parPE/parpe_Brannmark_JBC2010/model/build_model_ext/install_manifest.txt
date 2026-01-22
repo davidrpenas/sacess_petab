@@ -1,0 +1,3 @@
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Brannmark_JBC2010/Brannmark_JBC2010/./Brannmark_JBC2010.py
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Brannmark_JBC2010/Brannmark_JBC2010/./_Brannmark_JBC2010.cpython-310-x86_64-linux-gnu.so
+/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Brannmark_JBC2010/Brannmark_JBC2010/lib64/libBrannmark_JBC2010.a

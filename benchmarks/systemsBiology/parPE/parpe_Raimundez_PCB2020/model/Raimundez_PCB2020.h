@@ -1,0 +1,603 @@
+#ifndef _amici_TPL_MODELNAME_h
+#define _amici_TPL_MODELNAME_h
+#include <cmath>
+#include <memory>
+#include <gsl/gsl-lite.hpp>
+
+#include "amici/model_ode.h"
+#include "amici/splinefunctions.h"
+
+namespace amici {
+
+class Solver;
+
+namespace model_Raimundez_PCB2020 {
+
+extern std::array<const char*, 247> parameterNames;
+extern std::array<const char*, 21> fixedParameterNames;
+extern std::array<const char*, 22> stateNames;
+extern std::array<const char*, 111> observableNames;
+extern std::array<const ObservableScaling, 111> observableScalings;
+extern std::array<const char*, 90> expressionNames;
+extern std::array<const char*, 247> parameterIds;
+extern std::array<const char*, 21> fixedParameterIds;
+extern std::array<const char*, 22> stateIds;
+extern std::array<const char*, 111> observableIds;
+extern std::array<const char*, 90> expressionIds;
+extern std::array<int, 22> stateIdxsSolver;
+extern std::array<bool, 2> rootInitialValues;
+
+extern void Jy_Raimundez_PCB2020(realtype *Jy, const int iy, const realtype *p, const realtype *k, const realtype *y, const realtype *sigmay, const realtype *my);
+extern void dJydsigma_Raimundez_PCB2020(realtype *dJydsigma, const int iy, const realtype *p, const realtype *k, const realtype *y, const realtype *sigmay, const realtype *my);
+extern void dJydy_Raimundez_PCB2020(realtype *dJydy, const int iy, const realtype *p, const realtype *k, const realtype *y, const realtype *sigmay, const realtype *my);
+extern void dJydy_colptrs_Raimundez_PCB2020(SUNMatrixWrapper &colptrs, int index);
+extern void dJydy_rowvals_Raimundez_PCB2020(SUNMatrixWrapper &rowvals, int index);
+
+
+
+
+
+
+extern void root_Raimundez_PCB2020(realtype *root, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *tcl);
+extern void dwdp_Raimundez_PCB2020(realtype *dwdp, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w, const realtype *tcl, const realtype *dtcldp, const realtype *spl, const realtype *sspl, bool include_static);
+extern void dwdp_colptrs_Raimundez_PCB2020(SUNMatrixWrapper &colptrs);
+extern void dwdp_rowvals_Raimundez_PCB2020(SUNMatrixWrapper &rowvals);
+extern void dwdx_Raimundez_PCB2020(realtype *dwdx, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w, const realtype *tcl, const realtype *spl, bool include_static);
+extern void dwdx_colptrs_Raimundez_PCB2020(SUNMatrixWrapper &colptrs);
+extern void dwdx_rowvals_Raimundez_PCB2020(SUNMatrixWrapper &rowvals);
+extern void dwdw_Raimundez_PCB2020(realtype *dwdw, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w, const realtype *tcl, bool include_static);
+extern void dwdw_colptrs_Raimundez_PCB2020(SUNMatrixWrapper &colptrs);
+extern void dwdw_rowvals_Raimundez_PCB2020(SUNMatrixWrapper &rowvals);
+extern void dxdotdw_Raimundez_PCB2020(realtype *dxdotdw, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w);
+extern void dxdotdw_colptrs_Raimundez_PCB2020(SUNMatrixWrapper &colptrs);
+extern void dxdotdw_rowvals_Raimundez_PCB2020(SUNMatrixWrapper &rowvals);
+
+
+
+
+
+
+extern void dydx_Raimundez_PCB2020(realtype *dydx, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w, const realtype *dwdx);
+extern void dydp_Raimundez_PCB2020(realtype *dydp, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const int ip, const realtype *w, const realtype *tcl, const realtype *dtcldp, const realtype *spl, const realtype *sspl);
+
+
+
+
+extern void sigmay_Raimundez_PCB2020(realtype *sigmay, const realtype t, const realtype *p, const realtype *k, const realtype *y);
+
+extern void dsigmaydp_Raimundez_PCB2020(realtype *dsigmaydp, const realtype t, const realtype *p, const realtype *k, const realtype *y, const int ip);
+
+
+extern void w_Raimundez_PCB2020(realtype *w, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *tcl, const realtype *spl, bool include_static);
+
+
+
+
+extern void xdot_Raimundez_PCB2020(realtype *xdot, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w);
+extern void y_Raimundez_PCB2020(realtype *y, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w);
+
+
+
+
+
+
+extern void x_solver_Raimundez_PCB2020(realtype *x_solver, const realtype *x_rdata);
+
+
+
+
+
+
+
+
+
+
+
+
+extern std::vector<HermiteSpline> create_splines_Raimundez_PCB2020(const realtype *p, const realtype *k);
+
+
+
+/**
+ * @brief AMICI-generated model subclass.
+ */
+class Model_Raimundez_PCB2020 : public amici::Model_ODE {
+  public:
+    /**
+     * @brief Default constructor.
+     */
+    Model_Raimundez_PCB2020()
+        : amici::Model_ODE(
+              amici::ModelDimensions(
+                  22,                            // nx_rdata
+                  22,                        // nxtrue_rdata
+                  22,                           // nx_solver
+                  22,                       // nxtrue_solver
+                  0,                    // nx_solver_reinit
+                  247,                                  // np
+                  21,                                  // nk
+                  111,                                  // ny
+                  111,                              // nytrue
+                  0,                                  // nz
+                  0,                              // nztrue
+                  2,                              // nevent
+                  0,                       // nevent_solver
+                  0,                                // nspl
+                  1,                          // nobjective
+                  90,                                  // nw
+                  89,                               // ndwdx
+                  88,                               // ndwdp
+                  64,                               // ndwdw
+                  94,                            // ndxdotdw
+                  std::vector<int>{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},                              // ndjydy
+                  0,                    // ndxrdatadxsolver
+                  0,                        // ndxrdatadtcl
+                  0,                        // ndtotal_cldx_rdata
+                  0,                                       // nnz
+                  22,                                 // ubw
+                  22,                                 // lbw
+                  true,                                    // pythonGenerated
+                  0,                   // ndxdotdp_explicit
+                  0,                   // ndxdotdx_explicit
+                  1                    // w_recursion_depth
+              ),
+              amici::SimulationParameters(
+                  std::vector<realtype>{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0}, // fixedParameters
+                  std::vector<realtype>{0.21801214934063401, 0.32075990503437102, 0.041936901194249102, 0.0, 0.82292266917033496, 0.0, 0.427450996540987, -1.54468079589527, -0.53183572852766003, -1.0587911840678799e-22, -0.53819013044967801, -0.59997550631647301, 2.9999999999999698, -0.23823693668421, -1.74579260575349, -2.9999999999999698, -0.087595179128819006, -0.51888897354868502, 443.10115832489902, 999.99999999994202, 0.00036491507148629898, 0.0017009433332399199, 0.00021446334687912199, 1.46548915399828e-5, 0.58530265829900696, 8.8817485837034198, 0.00225906406531955, 0.066795612208920302, 0.032394868767760203, 2.6124677413685499e-5, 0.0018821970256015, 0.031271407854883103, 0.75168312329534004, 18.469296739605799, 2.1771593138042502, 1.3158798427701399, 0.32695656886396601, 0.74687020450883801, 1.34412787040515, 2.5426740178440701, 4.56300939074226, 0.026350805070196801, 301.34086553904501, 0.76547215771377497, 0.44935147180443402, 0.25356115135892598, 0.78371031814268599, 3.5334502435560902, 0.97477137909169298, 1.00042475919183, 1.24320885340702, 0.28639942145095298, 0.0032202841840530999, 0.077153878062750203, 0.0079600534365493296, 0.0083277688137723491, 0.069673144126816799, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}        // dynamic parameters
+              ),
+              amici::SecondOrderMode::none,                                  // o2mode
+              std::vector<realtype>{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},   // idlist
+              std::vector<int>{},               // z2events
+              {{0.0, {0, 1}}}               // state-independent events
+          ) {
+                 root_initial_values_ = std::vector<bool>(
+                     rootInitialValues.begin(), rootInitialValues.end()
+                 );
+          }
+
+    /**
+     * @brief Clone this model instance.
+     * @return A deep copy of this instance.
+     */
+    amici::Model *clone() const override {
+        return new Model_Raimundez_PCB2020(*this);
+    }
+
+    void fJrz(realtype *Jrz, const int iz, const realtype *p, const realtype *k, const realtype *rz, const realtype *sigmaz) override {}
+
+
+    void fJy(realtype *Jy, const int iy, const realtype *p, const realtype *k, const realtype *y, const realtype *sigmay, const realtype *my) override {
+        Jy_Raimundez_PCB2020(Jy, iy, p, k, y, sigmay, my);
+    }
+
+
+    void fJz(realtype *Jz, const int iz, const realtype *p, const realtype *k, const realtype *z, const realtype *sigmaz, const realtype *mz) override {}
+
+
+    void fdJrzdsigma(realtype *dJrzdsigma, const int iz, const realtype *p, const realtype *k, const realtype *rz, const realtype *sigmaz) override {}
+
+
+    void fdJrzdz(realtype *dJrzdz, const int iz, const realtype *p, const realtype *k, const realtype *rz, const realtype *sigmaz) override {}
+
+
+    void fdJydsigma(realtype *dJydsigma, const int iy, const realtype *p, const realtype *k, const realtype *y, const realtype *sigmay, const realtype *my) override {
+        dJydsigma_Raimundez_PCB2020(dJydsigma, iy, p, k, y, sigmay, my);
+    }
+
+
+    void fdJzdsigma(realtype *dJzdsigma, const int iz, const realtype *p, const realtype *k, const realtype *z, const realtype *sigmaz, const realtype *mz) override {}
+
+
+    void fdJzdz(realtype *dJzdz, const int iz, const realtype *p, const realtype *k, const realtype *z, const realtype *sigmaz, const double *mz) override {}
+
+
+    /**
+     * @brief model specific implementation of fdeltasx
+     * @param deltaqB sensitivity update
+     * @param t current time
+     * @param x current state
+     * @param p parameter vector
+     * @param k constant vector
+     * @param h heaviside vector
+     * @param ip sensitivity index
+     * @param ie event index
+     * @param xdot new model right hand side
+     * @param xdot_old previous model right hand side
+     * @param xB adjoint state
+     */
+    void fdeltaqB(realtype *deltaqB, const realtype t,
+                  const realtype *x, const realtype *p,
+                  const realtype *k, const realtype *h, const int ip,
+                  const int ie, const realtype *xdot,
+                  const realtype *xdot_old,
+                  const realtype *xB) override {}
+
+    void fdeltasx(realtype *deltasx, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w, const int ip, const int ie, const realtype *xdot, const realtype *xdot_old, const realtype *sx, const realtype *stau, const realtype *tcl) override {}
+
+
+    void fdeltax(double *deltax, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const int ie, const realtype *xdot, const realtype *xdot_old) override {}
+
+
+    /**
+     * @brief model specific implementation of fdeltaxB
+     * @param deltaxB adjoint state update
+     * @param t current time
+     * @param x current state
+     * @param p parameter vector
+     * @param k constant vector
+     * @param h heaviside vector
+     * @param ie event index
+     * @param xdot new model right hand side
+     * @param xdot_old previous model right hand side
+     * @param xB current adjoint state
+     */
+    void fdeltaxB(realtype *deltaxB, const realtype t,
+                  const realtype *x, const realtype *p,
+                  const realtype *k, const realtype *h, const int ie,
+                  const realtype *xdot, const realtype *xdot_old,
+                  const realtype *xB) override {}
+
+    void fdrzdp(realtype *drzdp, const int ie, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const int ip) override {}
+
+
+    void fdrzdx(realtype *drzdx, const int ie, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h) override {}
+
+
+    void fdsigmaydp(realtype *dsigmaydp, const realtype t, const realtype *p, const realtype *k, const realtype *y, const int ip) override {
+        dsigmaydp_Raimundez_PCB2020(dsigmaydp, t, p, k, y, ip);
+    }
+
+
+    void fdsigmaydy(realtype *dsigmaydy, const realtype t, const realtype *p, const realtype *k, const realtype *y) override {}
+
+
+    void fdsigmazdp(realtype *dsigmazdp, const realtype t, const realtype *p, const realtype *k, const int ip) override {}
+
+
+    void fdJydy(realtype *dJydy, const int iy, const realtype *p, const realtype *k, const realtype *y, const realtype *sigmay, const realtype *my) override {
+        dJydy_Raimundez_PCB2020(dJydy, iy, p, k, y, sigmay, my);
+    }
+
+    void fdJydy_colptrs(SUNMatrixWrapper &colptrs, int index) override {
+        dJydy_colptrs_Raimundez_PCB2020(colptrs, index);
+    }
+
+    void fdJydy_rowvals(SUNMatrixWrapper &rowvals, int index) override {
+        dJydy_rowvals_Raimundez_PCB2020(rowvals, index);
+    }
+
+
+    std::vector<HermiteSpline> fcreate_splines(const realtype *p, const realtype *k) override {
+        return create_splines_Raimundez_PCB2020(p, k);
+    }
+
+    void fdspline_valuesdp(realtype *dspline_valuesdp, const realtype *p, const realtype *k, const int ip) override {}
+
+    void fdspline_slopesdp(realtype *dspline_slopesdp, const realtype *p, const realtype *k, const int ip) override {}
+
+
+    void fdwdp(realtype *dwdp, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w, const realtype *tcl, const realtype *dtcldp, const realtype *spl, const realtype *sspl, bool include_static) override {
+        dwdp_Raimundez_PCB2020(dwdp, t, x, p, k, h, w, tcl, dtcldp, spl, sspl, include_static);
+    }
+
+    void fdwdp_colptrs(SUNMatrixWrapper &colptrs) override {
+        dwdp_colptrs_Raimundez_PCB2020(colptrs);
+    }
+
+    void fdwdp_rowvals(SUNMatrixWrapper &rowvals) override {
+        dwdp_rowvals_Raimundez_PCB2020(rowvals);
+    }
+
+
+    void fdwdx(realtype *dwdx, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w, const realtype *tcl, const realtype *spl, bool include_static) override {
+        dwdx_Raimundez_PCB2020(dwdx, t, x, p, k, h, w, tcl, spl, include_static);
+    }
+
+    void fdwdx_colptrs(SUNMatrixWrapper &colptrs) override {
+        dwdx_colptrs_Raimundez_PCB2020(colptrs);
+    }
+
+    void fdwdx_rowvals(SUNMatrixWrapper &rowvals) override {
+        dwdx_rowvals_Raimundez_PCB2020(rowvals);
+    }
+
+
+    void fdwdw(realtype *dwdw, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w, const realtype *tcl, bool include_static) override {
+        dwdw_Raimundez_PCB2020(dwdw, t, x, p, k, h, w, tcl, include_static);
+    }
+
+    void fdwdw_colptrs(SUNMatrixWrapper &colptrs) override {
+        dwdw_colptrs_Raimundez_PCB2020(colptrs);
+    }
+
+    void fdwdw_rowvals(SUNMatrixWrapper &rowvals) override {
+        dwdw_rowvals_Raimundez_PCB2020(rowvals);
+    }
+
+
+    void fdxdotdw(realtype *dxdotdw, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w) override {
+        dxdotdw_Raimundez_PCB2020(dxdotdw, t, x, p, k, h, w);
+    }
+
+    void fdxdotdw_colptrs(SUNMatrixWrapper &colptrs) override {
+        dxdotdw_colptrs_Raimundez_PCB2020(colptrs);
+    }
+
+    void fdxdotdw_rowvals(SUNMatrixWrapper &rowvals) override {
+        dxdotdw_rowvals_Raimundez_PCB2020(rowvals);
+    }
+
+
+    void fdxdotdp_explicit(realtype *dxdotdp_explicit, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w) override {}
+
+    void fdxdotdp_explicit_colptrs(SUNMatrixWrapper &colptrs) override {}
+
+    void fdxdotdp_explicit_rowvals(SUNMatrixWrapper &rowvals) override {}
+
+
+    void fdxdotdx_explicit(realtype *dxdotdx_explicit, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w) override {}
+
+    void fdxdotdx_explicit_colptrs(SUNMatrixWrapper &colptrs) override {}
+
+    void fdxdotdx_explicit_rowvals(SUNMatrixWrapper &rowvals) override {}
+
+
+    void fdydx(realtype *dydx, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w, const realtype *dwdx) override {
+        dydx_Raimundez_PCB2020(dydx, t, x, p, k, h, w, dwdx);
+    }
+
+
+    void fdydp(realtype *dydp, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const int ip, const realtype *w, const realtype *tcl, const realtype *dtcldp, const realtype *spl, const realtype *sspl) override {
+        dydp_Raimundez_PCB2020(dydp, t, x, p, k, h, ip, w, tcl, dtcldp, spl, sspl);
+    }
+
+
+    void fdzdp(realtype *dzdp, const int ie, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const int ip) override {}
+
+
+    void fdzdx(realtype *dzdx, const int ie, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h) override {}
+
+
+    void froot(realtype *root, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *tcl) override {
+        root_Raimundez_PCB2020(root, t, x, p, k, h, tcl);
+    }
+
+
+    void frz(realtype *rz, const int ie, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h) override {}
+
+
+    void fsigmay(realtype *sigmay, const realtype t, const realtype *p, const realtype *k, const realtype *y) override {
+        sigmay_Raimundez_PCB2020(sigmay, t, p, k, y);
+    }
+
+
+    void fsigmaz(realtype *sigmaz, const realtype t, const realtype *p, const realtype *k) override {}
+
+
+    void fstau(realtype *stau, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *tcl, const realtype *sx, const int ip, const int ie) override {}
+
+    void fsx0(realtype *sx0, const realtype t, const realtype *x, const realtype *p, const realtype *k, const int ip) override {}
+
+    void fsx0_fixedParameters(realtype *sx0_fixedParameters, const realtype t, const realtype *x0, const realtype *p, const realtype *k, const int ip, gsl::span<const int> reinitialization_state_idxs) override {}
+
+
+    void fw(realtype *w, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *tcl, const realtype *spl, bool include_static) override {
+        w_Raimundez_PCB2020(w, t, x, p, k, h, tcl, spl, include_static);
+    }
+
+
+    void fx0(realtype *x0, const realtype t, const realtype *p, const realtype *k) override {}
+
+
+    void fx0_fixedParameters(realtype *x0_fixedParameters, const realtype t, const realtype *p, const realtype *k, gsl::span<const int> reinitialization_state_idxs) override {}
+
+
+    void fxdot(realtype *xdot, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w) override {
+        xdot_Raimundez_PCB2020(xdot, t, x, p, k, h, w);
+    }
+
+
+    void fy(realtype *y, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w) override {
+        y_Raimundez_PCB2020(y, t, x, p, k, h, w);
+    }
+
+
+    void fz(realtype *z, const int ie, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h) override {}
+
+
+    
+
+    void fx_solver(realtype *x_solver, const realtype *x_rdata) override {
+        x_solver_Raimundez_PCB2020(x_solver, x_rdata);
+    }
+
+
+    void ftotal_cl(realtype *total_cl, const realtype *x_rdata, const realtype *p, const realtype *k) override {}
+
+
+    void fdx_rdatadx_solver(realtype *dx_rdatadx_solver, const realtype *x, const realtype *tcl, const realtype *p, const realtype *k) override {}
+
+    void fdx_rdatadx_solver_colptrs(SUNMatrixWrapper &colptrs) override {}
+
+    void fdx_rdatadx_solver_rowvals(SUNMatrixWrapper &rowvals) override {}
+
+
+    void fdx_rdatadp(realtype *dx_rdatadp, const realtype *x, const realtype *tcl, const realtype *p, const realtype *k, const int ip) override {}
+
+
+    void fdx_rdatadtcl(realtype *dx_rdatadtcl, const realtype *x, const realtype *tcl, const realtype *p, const realtype *k) override {}
+
+    void fdx_rdatadtcl_colptrs(SUNMatrixWrapper &colptrs) override {}
+
+    void fdx_rdatadtcl_rowvals(SUNMatrixWrapper &rowvals) override {}
+
+
+    void fdtotal_cldp(realtype *dtotal_cldp, const realtype *x_rdata, const realtype *p, const realtype *k, const int ip) override {}
+
+
+    void fdtotal_cldx_rdata(realtype *dtotal_cldx_rdata, const realtype *x_rdata, const realtype *p, const realtype *k, const realtype *tcl) override {}
+
+    void fdtotal_cldx_rdata_colptrs(SUNMatrixWrapper &colptrs) override {}
+
+    void fdtotal_cldx_rdata_rowvals(SUNMatrixWrapper &rowvals) override {}
+
+
+    std::string getName() const override {
+        return "Raimundez_PCB2020";
+    }
+
+    /**
+     * @brief Get names of the model parameters
+     * @return the names
+     */
+    std::vector<std::string> getParameterNames() const override {
+        return std::vector<std::string>(parameterNames.begin(),
+                                        parameterNames.end());
+    }
+
+    /**
+     * @brief Get names of the model states
+     * @return the names
+     */
+    std::vector<std::string> getStateNames() const override {
+        return std::vector<std::string>(stateNames.begin(), stateNames.end());
+    }
+
+    /**
+     * @brief Get names of the solver states
+     * @return the names
+     */
+    std::vector<std::string> getStateNamesSolver() const override {
+        std::vector<std::string> result;
+        result.reserve(stateIdxsSolver.size());
+        for(auto idx: stateIdxsSolver) {
+            result.push_back(stateNames[idx]);
+        }
+        return result;
+    }
+
+    /**
+     * @brief Get names of the fixed model parameters
+     * @return the names
+     */
+    std::vector<std::string> getFixedParameterNames() const override {
+        return std::vector<std::string>(fixedParameterNames.begin(),
+                                        fixedParameterNames.end());
+    }
+
+    /**
+     * @brief Get names of the observables
+     * @return the names
+     */
+    std::vector<std::string> getObservableNames() const override {
+        return std::vector<std::string>(observableNames.begin(),
+                                        observableNames.end());
+    }
+
+    /**
+     * @brief Get names of model expressions
+     * @return Expression names
+     */
+    std::vector<std::string> getExpressionNames() const override {
+        return std::vector<std::string>(expressionNames.begin(),
+                                        expressionNames.end());
+    }
+
+    /**
+     * @brief Get ids of the model parameters
+     * @return the ids
+     */
+    std::vector<std::string> getParameterIds() const override {
+        return std::vector<std::string>(parameterIds.begin(),
+                                        parameterIds.end());
+    }
+
+    /**
+     * @brief Get ids of the model states
+     * @return the ids
+     */
+    std::vector<std::string> getStateIds() const override {
+        return std::vector<std::string>(stateIds.begin(), stateIds.end());
+    }
+
+    /**
+     * @brief Get ids of the solver states
+     * @return the ids
+     */
+    std::vector<std::string> getStateIdsSolver() const override {
+        std::vector<std::string> result;
+        result.reserve(stateIdxsSolver.size());
+        for(auto idx: stateIdxsSolver) {
+            result.push_back(stateIds[idx]);
+        }
+        return result;
+    }
+
+    /**
+     * @brief Get ids of the fixed model parameters
+     * @return the ids
+     */
+    std::vector<std::string> getFixedParameterIds() const override {
+        return std::vector<std::string>(fixedParameterIds.begin(),
+                                        fixedParameterIds.end());
+    }
+
+    /**
+     * @brief Get ids of the observables
+     * @return the ids
+     */
+    std::vector<std::string> getObservableIds() const override {
+        return std::vector<std::string>(observableIds.begin(),
+                                        observableIds.end());
+    }
+
+    /**
+     * @brief Get IDs of model expressions
+     * @return Expression IDs
+     */
+    std::vector<std::string> getExpressionIds() const override {
+        return std::vector<std::string>(expressionIds.begin(),
+                                        expressionIds.end());
+    }
+
+    /**
+     * @brief function indicating whether reinitialization of states depending
+     * on fixed parameters is permissible
+     * @return flag indicating whether reinitialization of states depending on
+     * fixed parameters is permissible
+     */
+    bool isFixedParameterStateReinitializationAllowed() const override {
+        return true;
+    }
+
+    /**
+     * @brief returns the AMICI version that was used to generate the model
+     * @return AMICI version string
+     */
+    std::string getAmiciVersion() const override {
+        return "0.31.0";
+    }
+
+    /**
+     * @brief returns the amici version that was used to generate the model
+     * @return AMICI git commit hash
+     */
+    std::string getAmiciCommit() const override {
+        return "unknown";
+    }
+
+    bool hasQuadraticLLH() const override {
+        return false;
+    }
+
+    ObservableScaling getObservableScaling(int iy) const override {
+        return observableScalings.at(iy);
+    }
+};
+
+
+} // namespace model_Raimundez_PCB2020
+
+} // namespace amici
+
+#endif /* _amici_TPL_MODELNAME_h */

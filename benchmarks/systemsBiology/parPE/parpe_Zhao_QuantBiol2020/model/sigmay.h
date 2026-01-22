@@ -1,0 +1,5 @@
+#define sigma_observable_confirmed_infected sigmay[0]
+#define sigma_observable_susceptible sigmay[1]
+#define sigma_observable_unquarantined_infected sigmay[2]
+#define sigma_observable_quarantined_infected sigmay[3]
+#define sigma_observable_cumulative_infected sigmay[4]

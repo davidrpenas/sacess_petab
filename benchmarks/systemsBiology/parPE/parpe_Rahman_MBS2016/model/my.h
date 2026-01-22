@@ -1,0 +1,1 @@
+#define mobservable_prevalence my[0]

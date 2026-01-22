@@ -1,0 +1,115 @@
+#include "amici/symbolic_functions.h"
+#include "amici/defines.h"
+#include "sundials/sundials_types.h"
+
+#include <gsl/gsl-lite.hpp>
+#include <algorithm>
+
+#include "x.h"
+#include "p.h"
+#include "k.h"
+#include "h.h"
+#include "w.h"
+#include "xdot.h"
+
+namespace amici {
+namespace model_Smith_BMCSystBiol2013 {
+
+void xdot_Smith_BMCSystBiol2013(realtype *xdot, const realtype t, const realtype *x, const realtype *p, const realtype *k, const realtype *h, const realtype *w){
+    dInRdt = -flux_R1f + flux_R1r + flux_R4 - flux_R5f + flux_R5r;  // xdot[2]
+    dIns_InRdt = flux_R1f - flux_R1r - flux_R2;  // xdot[3]
+    dIns_InR_Pdt = flux_R2 - flux_R3f + flux_R3r - flux_R4 - flux_R7f + flux_R7r;  // xdot[4]
+    dIns_2_InR_Pdt = flux_R3f - flux_R3r - flux_R6f + flux_R6r;  // xdot[5]
+    dcytoplasm_InRdt = flux_R10 + flux_R11 + flux_R400 - flux_R401 + flux_R5f - flux_R5r;  // xdot[6]
+    dcytoplasm_Ins_2_InR_Pdt = -flux_R10 + flux_R6f - flux_R6r;  // xdot[7]
+    dcytoplasm_Ins_InR_Pdt = -flux_R11 + flux_R7f - flux_R7r;  // xdot[8]
+    dPTP1Bdt = -flux_R30f + flux_R30r;  // xdot[9]
+    dIRS1_TyrP_PI3Kdt = flux_R13f - flux_R13r;  // xdot[10]
+    dPI345P3dt = flux_R14f - flux_R14r;  // xdot[11]
+    dPIP2dt = -flux_R14f + flux_R14r;  // xdot[12]
+    dAktdt = -flux_R16f + flux_R16r;  // xdot[13]
+    dAkt_P2dt = flux_R16f - flux_R16r;  // xdot[14]
+    dPKCdt = -flux_R17f + flux_R17r;  // xdot[15]
+    dPKC_Pdt = flux_R17f - flux_R17r;  // xdot[16]
+    dAS160dt = -flux_R16a_f + flux_R16a_r;  // xdot[17]
+    dAS160_Pdt = flux_R16a_f - flux_R16a_r;  // xdot[18]
+    dcytoplasm_GLUT4dt = -flux_R20f + flux_R20r;  // xdot[19]
+    dcellsurface_GLUT4dt = flux_R20f - flux_R20r;  // xdot[20]
+    dPTENdt = -flux_R31f + flux_R31r;  // xdot[21]
+    dPTP1B_oxdt = flux_R30f - flux_R30r;  // xdot[24]
+    dPTEN_oxdt = flux_R31f - flux_R31r;  // xdot[25]
+    dROSdt = flux_R35f - flux_R35r + flux_R36f + flux_R37f - flux_R37r;  // xdot[26]
+    dGSHdt = -flux_R38f + flux_R38r;  // xdot[27]
+    dGSSGdt = flux_R38f - flux_R38r;  // xdot[28]
+    dcytoplasm_SOD2dt = flux_R405 - flux_R406;  // xdot[29]
+    dNOX_inactdt = -flux_R34f + flux_R34r2 + flux_R34r3;  // xdot[30]
+    dNOXdt = flux_R34f - flux_R34r1 - flux_R34r2;  // xdot[31]
+    dNOX_deactdt = flux_R34r1 - flux_R34r3;  // xdot[32]
+    dIRS1dt = -flux_R12_a_f + flux_R12_a_r - flux_R12f + flux_R12r + flux_R50f - flux_R50r1 - flux_R51f - flux_R52f;  // xdot[34]
+    dIRS1_TyrPdt = -flux_R12_b_f + flux_R12_b_r + flux_R12f - flux_R12r - flux_R13f + flux_R13r - flux_R50r2;  // xdot[35]
+    dIRS1_PolySerPdt = flux_R12_a_f - flux_R12_a_r - flux_R50r3 + flux_R51f + flux_R52f;  // xdot[36]
+    dIRS1_TyrP_PolySerPdt = flux_R12_b_f - flux_R12_b_r - flux_R50r4;  // xdot[37]
+    dPI3Kdt = -flux_R13f + flux_R13r;  // xdot[38]
+    dJNK_Pdt = flux_R42f - flux_R42r;  // xdot[39]
+    dIKK_Pdt = flux_R43f - flux_R43r;  // xdot[40]
+    dJNKdt = -flux_R42f + flux_R42r;  // xdot[41]
+    dIKKdt = -flux_R43f + flux_R43r;  // xdot[42]
+    dDUSPdt = -flux_R32f + flux_R32r;  // xdot[43]
+    dDUSP_oxdt = flux_R32f - flux_R32r;  // xdot[44]
+    ddegr_Foxo1dt = flux_R357 + flux_R358 + flux_R359 + flux_R360 + flux_R361 + flux_R362 + flux_R363 + flux_R364;  // xdot[46]
+    dcytoplasm_Foxo1_Pa0_Pd0_Pe0_pUb0dt = flux_R100 - flux_R101 + flux_R102 - flux_R165 - flux_R189 + flux_R213 - flux_R237 + flux_R249 - flux_R285 + flux_R291 - flux_R333;  // xdot[47]
+    dnucleus_Foxo1_Pa0_Pd0_Pe0_pUb0dt = flux_R101 - flux_R102 - flux_R103 + flux_R104 - flux_R166 - flux_R190 + flux_R214 - flux_R238 + flux_R250 - flux_R286 + flux_R292 - flux_R334;  // xdot[48]
+    ddnabound_Foxo1_Pa0_Pd0_Pe0_pUb0dt = flux_R103 - flux_R104 - flux_R167 - flux_R191 + flux_R215 - flux_R239 + flux_R251 - flux_R287 + flux_R293 - flux_R335;  // xdot[49]
+    dcytoplasm_Foxo1_Pa0_Pd0_Pe0_pUb1dt = -flux_R105 + flux_R106 - flux_R168 - flux_R192 + flux_R216 - flux_R240 + flux_R252 - flux_R288 + flux_R294 + flux_R333 - flux_R357;  // xdot[50]
+    dnucleus_Foxo1_Pa0_Pd0_Pe0_pUb1dt = flux_R105 - flux_R106 - flux_R107 + flux_R108 - flux_R169 - flux_R193 + flux_R217 - flux_R241 + flux_R253 - flux_R289 + flux_R295 + flux_R334;  // xdot[51]
+    ddnabound_Foxo1_Pa0_Pd0_Pe0_pUb1dt = flux_R107 - flux_R108 - flux_R170 - flux_R194 + flux_R218 - flux_R242 + flux_R254 - flux_R290 + flux_R296 + flux_R335;  // xdot[52]
+    dcytoplasm_Foxo1_Pa0_Pd0_Pe1_pUb0dt = -flux_R109 + flux_R110 - flux_R171 - flux_R195 + flux_R219 - flux_R243 + flux_R255 + flux_R285 - flux_R291 - flux_R336;  // xdot[53]
+    dnucleus_Foxo1_Pa0_Pd0_Pe1_pUb0dt = flux_R109 - flux_R110 - flux_R111 + flux_R112 - flux_R172 - flux_R196 + flux_R220 - flux_R244 + flux_R256 + flux_R286 - flux_R292 - flux_R337;  // xdot[54]
+    ddnabound_Foxo1_Pa0_Pd0_Pe1_pUb0dt = flux_R111 - flux_R112 - flux_R173 - flux_R197 + flux_R221 - flux_R245 + flux_R257 + flux_R287 - flux_R293 - flux_R338;  // xdot[55]
+    dcytoplasm_Foxo1_Pa0_Pd0_Pe1_pUb1dt = -flux_R113 + flux_R114 - flux_R174 - flux_R198 + flux_R222 - flux_R246 + flux_R258 + flux_R288 - flux_R294 + flux_R336 - flux_R358;  // xdot[56]
+    dnucleus_Foxo1_Pa0_Pd0_Pe1_pUb1dt = flux_R113 - flux_R114 - flux_R115 + flux_R116 - flux_R175 - flux_R199 + flux_R223 - flux_R247 + flux_R259 + flux_R289 - flux_R295 + flux_R337;  // xdot[57]
+    ddnabound_Foxo1_Pa0_Pd0_Pe1_pUb1dt = flux_R115 - flux_R116 - flux_R176 - flux_R200 + flux_R224 - flux_R248 + flux_R260 + flux_R290 - flux_R296 + flux_R338;  // xdot[58]
+    dcytoplasm_Foxo1_Pa0_Pd1_Pe0_pUb0dt = -flux_R117 + flux_R118 - flux_R177 - flux_R201 + flux_R225 + flux_R237 - flux_R249 - flux_R297 + flux_R303 - flux_R339;  // xdot[59]
+    dnucleus_Foxo1_Pa0_Pd1_Pe0_pUb0dt = flux_R117 - flux_R118 - flux_R119 + flux_R120 - flux_R178 - flux_R202 + flux_R226 + flux_R238 - flux_R250 - flux_R298 + flux_R304 - flux_R340;  // xdot[60]
+    ddnabound_Foxo1_Pa0_Pd1_Pe0_pUb0dt = flux_R119 - flux_R120 - flux_R179 - flux_R203 + flux_R227 + flux_R239 - flux_R251 - flux_R299 + flux_R305 - flux_R341;  // xdot[61]
+    dcytoplasm_Foxo1_Pa0_Pd1_Pe0_pUb1dt = -flux_R121 + flux_R122 - flux_R180 - flux_R204 + flux_R228 + flux_R240 - flux_R252 - flux_R300 + flux_R306 + flux_R339 - flux_R359;  // xdot[62]
+    dnucleus_Foxo1_Pa0_Pd1_Pe0_pUb1dt = flux_R121 - flux_R122 - flux_R123 + flux_R124 - flux_R181 - flux_R205 + flux_R229 + flux_R241 - flux_R253 - flux_R301 + flux_R307 + flux_R340;  // xdot[63]
+    ddnabound_Foxo1_Pa0_Pd1_Pe0_pUb1dt = flux_R123 - flux_R124 - flux_R182 - flux_R206 + flux_R230 + flux_R242 - flux_R254 - flux_R302 + flux_R308 + flux_R341;  // xdot[64]
+    dcytoplasm_Foxo1_Pa0_Pd1_Pe1_pUb0dt = -flux_R125 + flux_R126 - flux_R183 - flux_R207 + flux_R231 + flux_R243 - flux_R255 + flux_R297 - flux_R303 - flux_R342;  // xdot[65]
+    dnucleus_Foxo1_Pa0_Pd1_Pe1_pUb0dt = flux_R125 - flux_R126 - flux_R127 + flux_R128 - flux_R184 - flux_R208 + flux_R232 + flux_R244 - flux_R256 + flux_R298 - flux_R304 - flux_R343;  // xdot[66]
+    ddnabound_Foxo1_Pa0_Pd1_Pe1_pUb0dt = flux_R127 - flux_R128 - flux_R185 - flux_R209 + flux_R233 + flux_R245 - flux_R257 + flux_R299 - flux_R305 - flux_R344;  // xdot[67]
+    dcytoplasm_Foxo1_Pa0_Pd1_Pe1_pUb1dt = -flux_R129 + flux_R130 - flux_R186 - flux_R210 + flux_R234 + flux_R246 - flux_R258 + flux_R300 - flux_R306 + flux_R342 - flux_R360;  // xdot[68]
+    dnucleus_Foxo1_Pa0_Pd1_Pe1_pUb1dt = flux_R129 - flux_R130 - flux_R131 + flux_R132 - flux_R187 - flux_R211 + flux_R235 + flux_R247 - flux_R259 + flux_R301 - flux_R307 + flux_R343;  // xdot[69]
+    ddnabound_Foxo1_Pa0_Pd1_Pe1_pUb1dt = flux_R131 - flux_R132 - flux_R188 - flux_R212 + flux_R236 + flux_R248 - flux_R260 + flux_R302 - flux_R308 + flux_R344;  // xdot[70]
+    dcytoplasm_Foxo1_Pa1_Pd0_Pe0_pUb0dt = -flux_R133 + flux_R134 + flux_R165 + flux_R189 - flux_R213 - flux_R261 + flux_R273 - flux_R309 + flux_R315 - flux_R345;  // xdot[71]
+    dnucleus_Foxo1_Pa1_Pd0_Pe0_pUb0dt = flux_R133 - flux_R134 - flux_R135 + flux_R136 + flux_R166 + flux_R190 - flux_R214 - flux_R262 + flux_R274 - flux_R310 + flux_R316 - flux_R346;  // xdot[72]
+    ddnabound_Foxo1_Pa1_Pd0_Pe0_pUb0dt = flux_R135 - flux_R136 + flux_R167 + flux_R191 - flux_R215 - flux_R263 + flux_R275 - flux_R311 + flux_R317 - flux_R347;  // xdot[73]
+    dcytoplasm_Foxo1_Pa1_Pd0_Pe0_pUb1dt = -flux_R137 + flux_R138 + flux_R168 + flux_R192 - flux_R216 - flux_R264 + flux_R276 - flux_R312 + flux_R318 + flux_R345 - flux_R361;  // xdot[74]
+    dnucleus_Foxo1_Pa1_Pd0_Pe0_pUb1dt = flux_R137 - flux_R138 - flux_R139 + flux_R140 + flux_R169 + flux_R193 - flux_R217 - flux_R265 + flux_R277 - flux_R313 + flux_R319 + flux_R346;  // xdot[75]
+    ddnabound_Foxo1_Pa1_Pd0_Pe0_pUb1dt = flux_R139 - flux_R140 + flux_R170 + flux_R194 - flux_R218 - flux_R266 + flux_R278 - flux_R314 + flux_R320 + flux_R347;  // xdot[76]
+    dcytoplasm_Foxo1_Pa1_Pd0_Pe1_pUb0dt = -flux_R141 + flux_R142 + flux_R171 + flux_R195 - flux_R219 - flux_R267 + flux_R279 + flux_R309 - flux_R315 - flux_R348;  // xdot[77]
+    dnucleus_Foxo1_Pa1_Pd0_Pe1_pUb0dt = flux_R141 - flux_R142 - flux_R143 + flux_R144 + flux_R172 + flux_R196 - flux_R220 - flux_R268 + flux_R280 + flux_R310 - flux_R316 - flux_R349;  // xdot[78]
+    ddnabound_Foxo1_Pa1_Pd0_Pe1_pUb0dt = flux_R143 - flux_R144 + flux_R173 + flux_R197 - flux_R221 - flux_R269 + flux_R281 + flux_R311 - flux_R317 - flux_R350;  // xdot[79]
+    dcytoplasm_Foxo1_Pa1_Pd0_Pe1_pUb1dt = -flux_R145 + flux_R146 + flux_R174 + flux_R198 - flux_R222 - flux_R270 + flux_R282 + flux_R312 - flux_R318 + flux_R348 - flux_R362;  // xdot[80]
+    dnucleus_Foxo1_Pa1_Pd0_Pe1_pUb1dt = flux_R145 - flux_R146 - flux_R147 + flux_R148 + flux_R175 + flux_R199 - flux_R223 - flux_R271 + flux_R283 + flux_R313 - flux_R319 + flux_R349;  // xdot[81]
+    ddnabound_Foxo1_Pa1_Pd0_Pe1_pUb1dt = flux_R147 - flux_R148 + flux_R176 + flux_R200 - flux_R224 - flux_R272 + flux_R284 + flux_R314 - flux_R320 + flux_R350;  // xdot[82]
+    dcytoplasm_Foxo1_Pa1_Pd1_Pe0_pUb0dt = -flux_R149 + flux_R150 + flux_R177 + flux_R201 - flux_R225 + flux_R261 - flux_R273 - flux_R321 + flux_R327 - flux_R351;  // xdot[83]
+    dnucleus_Foxo1_Pa1_Pd1_Pe0_pUb0dt = flux_R149 - flux_R150 - flux_R151 + flux_R152 + flux_R178 + flux_R202 - flux_R226 + flux_R262 - flux_R274 - flux_R322 + flux_R328 - flux_R352;  // xdot[84]
+    ddnabound_Foxo1_Pa1_Pd1_Pe0_pUb0dt = flux_R151 - flux_R152 + flux_R179 + flux_R203 - flux_R227 + flux_R263 - flux_R275 - flux_R323 + flux_R329 - flux_R353;  // xdot[85]
+    dcytoplasm_Foxo1_Pa1_Pd1_Pe0_pUb1dt = -flux_R153 + flux_R154 + flux_R180 + flux_R204 - flux_R228 + flux_R264 - flux_R276 - flux_R324 + flux_R330 + flux_R351 - flux_R363;  // xdot[86]
+    dnucleus_Foxo1_Pa1_Pd1_Pe0_pUb1dt = flux_R153 - flux_R154 - flux_R155 + flux_R156 + flux_R181 + flux_R205 - flux_R229 + flux_R265 - flux_R277 - flux_R325 + flux_R331 + flux_R352;  // xdot[87]
+    ddnabound_Foxo1_Pa1_Pd1_Pe0_pUb1dt = flux_R155 - flux_R156 + flux_R182 + flux_R206 - flux_R230 + flux_R266 - flux_R278 - flux_R326 + flux_R332 + flux_R353;  // xdot[88]
+    dcytoplasm_Foxo1_Pa1_Pd1_Pe1_pUb0dt = -flux_R157 + flux_R158 + flux_R183 + flux_R207 - flux_R231 + flux_R267 - flux_R279 + flux_R321 - flux_R327 - flux_R354;  // xdot[89]
+    dnucleus_Foxo1_Pa1_Pd1_Pe1_pUb0dt = flux_R157 - flux_R158 - flux_R159 + flux_R160 + flux_R184 + flux_R208 - flux_R232 + flux_R268 - flux_R280 + flux_R322 - flux_R328 - flux_R355;  // xdot[90]
+    ddnabound_Foxo1_Pa1_Pd1_Pe1_pUb0dt = flux_R159 - flux_R160 + flux_R185 + flux_R209 - flux_R233 + flux_R269 - flux_R281 + flux_R323 - flux_R329 - flux_R356;  // xdot[91]
+    dcytoplasm_Foxo1_Pa1_Pd1_Pe1_pUb1dt = -flux_R161 + flux_R162 + flux_R186 + flux_R210 - flux_R234 + flux_R270 - flux_R282 + flux_R324 - flux_R330 + flux_R354 - flux_R364;  // xdot[92]
+    dnucleus_Foxo1_Pa1_Pd1_Pe1_pUb1dt = flux_R161 - flux_R162 - flux_R163 + flux_R164 + flux_R187 + flux_R211 - flux_R235 + flux_R271 - flux_R283 + flux_R325 - flux_R331 + flux_R355;  // xdot[93]
+    ddnabound_Foxo1_Pa1_Pd1_Pe1_pUb1dt = flux_R163 - flux_R164 + flux_R188 + flux_R212 - flux_R236 + flux_R272 - flux_R284 + flux_R326 - flux_R332 + flux_R356;  // xdot[94]
+    dnucleus_RNA_InRdt = flux_R365 + flux_R367 + flux_R369 + flux_R371 + flux_R373 + flux_R375 + flux_R377 + flux_R379 + flux_R381 + flux_R383 + flux_R385 + flux_R387 + flux_R389 + flux_R391 + flux_R393 + flux_R395 + flux_R397 - flux_R398;  // xdot[95]
+    dcytoplasm_RNA_InRdt = flux_R398 - flux_R399;  // xdot[96]
+    dnucleus_RNA_SOD2dt = flux_R366 + flux_R368 + flux_R370 + flux_R372 + flux_R374 + flux_R376 + flux_R378 + flux_R380 + flux_R382 + flux_R384 + flux_R386 + flux_R388 + flux_R390 + flux_R392 + flux_R394 + flux_R396 + flux_R402 - flux_R403;  // xdot[97]
+    dcytoplasm_RNA_SOD2dt = flux_R403 - flux_R404;  // xdot[98]
+}
+
+} // namespace model_Smith_BMCSystBiol2013
+} // namespace amici

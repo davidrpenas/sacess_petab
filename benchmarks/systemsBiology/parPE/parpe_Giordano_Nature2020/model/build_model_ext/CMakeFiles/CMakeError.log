@@ -1,0 +1,50 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Giordano_Nature2020/build_model_ext/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/bin/ninja cmTC_7c7ea && [1/2] Building C object CMakeFiles/cmTC_7c7ea.dir/src.c.o
+[2/2] Linking C executable cmTC_7c7ea
+FAILED: cmTC_7c7ea 
+: && /opt/cesga/2020/software/Core/gcccore/12.3.0/bin/cc   CMakeFiles/cmTC_7c7ea.dir/src.c.o -o cmTC_7c7ea   && :
+CMakeFiles/cmTC_7c7ea.dir/src.c.o:src.c:function main: error: undefined reference to 'pthread_create'
+CMakeFiles/cmTC_7c7ea.dir/src.c.o:src.c:function main: error: undefined reference to 'pthread_detach'
+CMakeFiles/cmTC_7c7ea.dir/src.c.o:src.c:function main: error: undefined reference to 'pthread_cancel'
+CMakeFiles/cmTC_7c7ea.dir/src.c.o:src.c:function main: error: undefined reference to 'pthread_join'
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/benchmark_collection/Giordano_Nature2020/build_model_ext/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/bin/ninja cmTC_d30f0 && [1/2] Building C object CMakeFiles/cmTC_d30f0.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_d30f0
+FAILED: cmTC_d30f0 
+: && /opt/cesga/2020/software/Core/gcccore/12.3.0/bin/cc -DCHECK_FUNCTION_EXISTS=pthread_create  CMakeFiles/cmTC_d30f0.dir/CheckFunctionExists.c.o -o cmTC_d30f0  -lpthreads && :
+/mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/bin/ld.gold: error: cannot find -lpthreads
+CMakeFiles/cmTC_d30f0.dir/CheckFunctionExists.c.o:CheckFunctionExists.c:function main: error: undefined reference to 'pthread_create'
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+

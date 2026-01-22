@@ -1,0 +1,8 @@
+#define dSTAT5Adt xdot[0]
+#define dSTAT5Bdt xdot[1]
+#define dpApBdt xdot[2]
+#define dpApAdt xdot[3]
+#define dpBpBdt xdot[4]
+#define dnucpApAdt xdot[5]
+#define dnucpApBdt xdot[6]
+#define dnucpBpBdt xdot[7]

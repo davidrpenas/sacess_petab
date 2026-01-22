@@ -1,0 +1,7 @@
+#define dalpha_dR dwdw[0]
+#define dflux_Susceptible_to_Unquarantined_dTotal_Pop dwdw[1]
+#define dalpha_dgamma_1 dwdw[2]
+#define dflux_Unquarantined_to_Quarantined_dgamma_1 dwdw[3]
+#define dbeta_dgamma_2 dwdw[4]
+#define dflux_Susceptible_to_Unquarantined_dalpha dwdw[5]
+#define dflux_Quarantined_to_Confirmed_dbeta dwdw[6]

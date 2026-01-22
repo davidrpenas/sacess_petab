@@ -1,0 +1,8 @@
+#define mobservable_CD274mRNA my[0]
+#define mobservable_IL13_cell my[1]
+#define mobservable_RecSurf my[2]
+#define mobservable_SOCS3 my[3]
+#define mobservable_SOCS3mRNA my[4]
+#define mobservable_pIL4Ra my[5]
+#define mobservable_pJAK2 my[6]
+#define mobservable_pSTAT5 my[7]

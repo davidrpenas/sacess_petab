@@ -1,0 +1,5 @@
+#define flux_v1 w[0]
+#define flux_v2 w[1]
+#define flux_v3 w[2]
+#define flux_v4 w[3]
+#define flux_v5 w[4]

@@ -1,0 +1,5 @@
+#define lag w[0]
+#define flux_reaction1 w[1]
+#define flux_reaction2 w[2]
+#define flux_reaction3 w[3]
+#define flux_reaction4 w[4]

@@ -1,0 +1,1 @@
+#define mopen_probability my[0]

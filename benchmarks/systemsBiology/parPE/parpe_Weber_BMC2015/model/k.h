@@ -1,0 +1,7 @@
+#define pu2 k[0]
+#define Ect_Expr_CERT_flag k[1]
+#define Ect_Expr_PI4K3beta_flag k[2]
+#define PdBu_dose k[3]
+#define PdBu_time k[4]
+#define kb_NB142_70_dose k[5]
+#define kb_NB142_70_time k[6]

@@ -1,0 +1,7 @@
+#define dflux_Susceptible_to_Unquarantined_dSusceptible dwdx[0]
+#define dCumulative_Infected_dUnquarantined_Infected dwdx[1]
+#define dflux_Susceptible_to_Unquarantined_dUnquarantined_Infected dwdx[2]
+#define dflux_Unquarantined_to_Quarantined_dUnquarantined_Infected dwdx[3]
+#define dCumulative_Infected_dQuarantined_Infected dwdx[4]
+#define dflux_Quarantined_to_Confirmed_dQuarantined_Infected dwdx[5]
+#define dCumulative_Infected_dConfirmed_Infected dwdx[6]

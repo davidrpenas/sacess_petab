@@ -1,0 +1,8 @@
+#define sigma_observable_CD274mRNA sigmay[0]
+#define sigma_observable_IL13_cell sigmay[1]
+#define sigma_observable_RecSurf sigmay[2]
+#define sigma_observable_SOCS3 sigmay[3]
+#define sigma_observable_SOCS3mRNA sigmay[4]
+#define sigma_observable_pIL4Ra sigmay[5]
+#define sigma_observable_pJAK2 sigmay[6]
+#define sigma_observable_pSTAT5 sigmay[7]

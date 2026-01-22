@@ -1,0 +1,8 @@
+#define dX_proteindt xdot[0]
+#define dY_proteindt xdot[1]
+#define dZ_proteindt xdot[2]
+#define dGFPdt xdot[3]
+#define dX_mRNAdt xdot[4]
+#define dY_mRNAdt xdot[5]
+#define dZ_mRNAdt xdot[6]
+#define dGFP_mRNAdt xdot[7]

@@ -1,0 +1,8 @@
+#define sigma_yCERTpRN24 sigmay[0]
+#define sigma_yCERTt sigmay[1]
+#define sigma_yPI4K3BpRN24 sigmay[2]
+#define sigma_yPI4K3Bt sigmay[3]
+#define sigma_yPKDpN0 sigmay[4]
+#define sigma_yPKDpN24 sigmay[5]
+#define sigma_yPKDpN25 sigmay[6]
+#define sigma_yPKDt sigmay[7]

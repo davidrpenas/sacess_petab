@@ -1,0 +1,5 @@
+#define insulin_stimulation_end h[0]
+#define Heaviside_3 h[1]
+#define Heaviside_4 h[2]
+#define insulin_restimulation_start h[3]
+#define insulin_restimulation_end h[4]

@@ -1,0 +1,1 @@
+#define sigma_task0_model0_perelson1_V sigmay[0]

@@ -1,0 +1,1 @@
+#define dflux_infection_dbeta_N dwdw[0]

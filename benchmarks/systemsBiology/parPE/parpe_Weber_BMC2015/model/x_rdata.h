@@ -1,0 +1,7 @@
+#define PKD x_rdata[0]
+#define PKDDAGa x_rdata[1]
+#define PI4K3B x_rdata[2]
+#define PI4K3Ba x_rdata[3]
+#define CERTERa x_rdata[4]
+#define CERT x_rdata[5]
+#define CERTTGNa x_rdata[6]

@@ -1,0 +1,8 @@
+#define dflux_v6_v_5_dFsk dwdw[0]
+#define dflux_v8_v_7_dFsk dwdw[1]
+#define dflux_v40_v_39_dH89 dwdw[2]
+#define dflux_v5_v_4_dIBMXex dwdw[3]
+#define dflux_v2_v_1_dRp8_Br_cAMPS_pAB dwdw[4]
+#define dflux_v3_v_2_dRp8_pCPT_cAMPS_pAB dwdw[5]
+#define dflux_v4_v_3_dRp_cAMPS_pAB dwdw[6]
+#define dflux_v1_v_0_dSp8_Br_cAMPS_AM dwdw[7]

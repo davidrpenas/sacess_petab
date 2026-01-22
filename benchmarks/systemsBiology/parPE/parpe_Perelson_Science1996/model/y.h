@@ -1,0 +1,1 @@
+#define task0_model0_perelson1_V y[0]

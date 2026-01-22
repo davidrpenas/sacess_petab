@@ -1,0 +1,6 @@
+#define dRAFdt xdot[0]
+#define dpRAFdt xdot[1]
+#define dMEKdt xdot[2]
+#define dpMEKdt xdot[3]
+#define dERKdt xdot[4]
+#define dpERKdt xdot[5]

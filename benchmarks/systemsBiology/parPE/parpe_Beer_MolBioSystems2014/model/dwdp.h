@@ -1,0 +1,7 @@
+#define dflux_reaction1_dBacmax dwdp[0]
+#define dflux_reaction1_dbeta dwdp[1]
+#define dflux_reaction4_dkdegi dwdp[2]
+#define dflux_reaction3_dkdim dwdp[3]
+#define dflux_reaction4_dkdim dwdp[4]
+#define dflux_reaction2_dksyn dwdp[5]
+#define dflux_reaction3_dksyn dwdp[6]

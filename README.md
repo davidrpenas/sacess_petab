@@ -1,4 +1,4 @@
-# SaCeSS+PEtab
+# SaCeSS_PEtab
 
 ## A modified version of SaCeSS to work with problems in PEtab format
 

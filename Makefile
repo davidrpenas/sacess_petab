@@ -2,31 +2,31 @@ BUILDDIR=.
 LIBRARY=$(BUILDDIR)/lib
 
 # CONFIGURE THIS PATHS
-PATHPARPE=/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE-0.7.0
-PATHHDF5=/opt/cesga/2020/software/Compiler/gcccore/system/hdf5/1.12.1
-PATHBOOST=/opt/cesga/2020/software/Compiler/gcccore/system/boost/1.83.0/lib64
-PATHIPOPT=/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE-0.7.0/ThirdParty/Ipopt-releases-3.13.3/install
+PATHPARPE=/parPE
+#PATHHDF5=/opt/cesga/2020/software/Compiler/gcccore/system/hdf5/1.12.1
+PATHBOOST=/usr/lib/x86_64-linux-gnu/
+#PATHIPOPT=/mnt/lustre/scratch/nlsas/home/csic/gim/dro/parPE/ThirdParty/Ipopt-releases-3.13.3/install
 
 #############################################################################
 ## PARALLEL GCC/GFORTRAN - OPENMP
 #############################################################################
-CC:=mpicc 
+CC:=mpicc
 FC:=mpif90
-CPP:==mpic++
+CPP:=mpic++
+
 CLIBS+=  -lsz -std=gnu11 -lstdc++ -lpthread -lrt -lgfortran  -cpp -MMD -lm -ldl -lz
-CFLAGS+= -O3 -cpp -DGNU -lhdf5_cpp -lhdf5_hl_cpp -lhdf5_hl -lhdf5 -lopenblas -lstdc++fs
+CFLAGS+= -O3  -cpp -DGNU -lhdf5_cpp -lhdf5_hl_cpp -lhdf5_hl -lhdf5 -lcblas -lstdc++fs
+CXXFLAGS=-std=c++17
 
-
-
-CPARALLEL+= -DOPENMP -DMPI2 -fopenmp -lmpi
+CPARALLEL+=-DOPENMP -DMPI2 -fopenmp -lmpi -lmpi_cxx 
 FLIBS+=
-FFLAGS+=  -O3 -cpp -DGNU -std=legacy
+FFLAGS+= -O3 -cpp -DGNU -std=legacy
 FPARALLEL+= -DOPENMP -DMPI2 -DGNU -fopenmp
 
 #LIBS+= -L$(LIBRARY)/BLAS -lblas
-INC+=  -I$(LIBRARY)/misqp/gnu
-LIBS+= -L$(LIBRARY)/misqp/gnu
-MISQP=   $(LIBRARY)/misqp/gnu/libmisqp.so
+#INC+=  -I$(LIBRARY)/misqp/gnu
+#LIBS+= -L$(LIBRARY)/misqp/gnu
+#MISQP=   $(LIBRARY)/misqp/gnu/libmisqp.so
 
 
 
@@ -90,6 +90,20 @@ LIBPARPE_LOCAL=$(BUILDDIR)/benchmarks/systemsBiology/parPE/parpe_Zheng_PNAS2012/
 TERM_PE=_Zheng
 endif
 DIR_Zheng_build := $(BUILDDIR)/benchmarks/systemsBiology/parPE/parpe_Zheng_PNAS2012/build
+
+#ifeq ($(PARPE),Alkan)
+#INCPARPE_LOCAL=-I$(BUILDDIR)/benchmarks/systemsBiology/parPE/parpe_Alkan_SciSignal2018/model -DAlkan
+#LIBPARPE_LOCAL=$(BUILDDIR)/benchmarks/systemsBiology/parPE/parpe_Alkan_SciSignal2018/build/model/libAlkan_SciSignal2018.a -DAlkan
+#TERM_PE=_Alkan
+#endif
+#DIR_Alkan_build := $(BUILDDIR)/benchmarks/systemsBiology/parPE/parpe_Alkan_SciSignal2018/build
+
+#ifeq ($(PARPE),Bachmann)
+#INCPARPE_LOCAL=-I$(BUILDDIR)/benchmarks/systemsBiology/parPE/parpe_Bachmann_MSB2011/model -DBachmann
+#LIBPARPE_LOCAL=$(BUILDDIR)/benchmarks/systemsBiology/parPE/parpe_Bachmann_MSB2011/build/model/libBachmann_MSB2011.a -DBachmann
+#TERM_PE=_Bachmann
+#endif
+#DIR_Bachmann_build := $(BUILDDIR)/benchmarks/systemsBiology/parPE/parpe_Bachmann_MSB2011/build
 
 ifeq ($(PARPE),Blasi)
 INCPARPE_LOCAL=-I$(BUILDDIR)/benchmarks/systemsBiology/parPE/parpe_Blasi_CellSystems2016/model -DBlasi
@@ -264,46 +278,52 @@ INCPARPE+=-I$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/include
 INCPARPE+=-I$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/include
 INCPARPE+=-I$(PATHPARPE)/deps/AMICI/build/include
 INCPARPE+=-I$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/src/cvodes
+INCPARPE+=-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include
+INCPARPE+=-fopenmp -O3 -I/usr/lib/llvm-18/include
 
-LIBPARPE+=$(PATHBOOST)/libboost_system.so
-LIBPARPE+=$(PATHBOOST)/libboost_chrono.so
-LIBPARPE+=$(PATHBOOST)/libboost_serialization.so
+LIBPARPE+=-L/usr/lib/x86_k64-linux-gnu   -lboost_system -lboost_serialization -lboost_chrono -lboost_system  -lipopt
 
-LIBPARPE+=$(PATHIPOPT)/lib/libipopt.so
-#LIBPARPE+=$(PATHCERES)/lib64/libceres.a
-
+LIBPARPE+=/usr/lib/libipopt.so -L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include
+LIBPARPE+=-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include
 LIBPARPE+=-Wl,--start-group 
 LIBPARPE+=$(PATHPARPE)/build/libparpe.a
 LIBPARPE+=$(PATHPARPE)/build/src/parpeamici/libparpeamici.a
 LIBPARPE+=$(PATHPARPE)/deps/AMICI/build/libamici.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_core.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_nvecserial.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_cvodes.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_idas.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunlinsolband.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunlinsolklu.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunlinsolpcg.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunlinsolspbcgs.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunlinsolspfgmr.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunlinsolspgmr.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunlinsolsptfqmr.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_core.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_nvecserial.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_cvodes.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_idas.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunlinsolband.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunlinsolklu.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunlinsolpcg.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunlinsolspbcgs.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunlinsolspfgmr.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunlinsolspgmr.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunlinsolsptfqmr.a
 
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunmatrixband.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunmatrixdense.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunmatrixsparse.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunnonlinsolfixedpoint.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib64/libsundials_sunnonlinsolnewton.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunmatrixband.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunmatrixdense.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunmatrixsparse.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunnonlinsolfixedpoint.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/sundials/build/lib/libsundials_sunnonlinsolnewton.a
 
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/install/lib64/libklu.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/install/lib64/libcolamd.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/install/lib64/libbtf.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/install/lib64/libamd.a
-LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/install/lib64/libsuitesparseconfig.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/install/lib/libklu.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/install/lib/libcolamd.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/install/lib/libbtf.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/install/lib/libamd.a
+LIBPARPE+=$(PATHPARPE)/deps/AMICI/ThirdParty/SuiteSparse/install/lib/libsuitesparseconfig.a
 LIBPARPE+=$(PATHPARPE)/build/src/parpeloadbalancer/libparpeloadbalancer.a
 LIBPARPE+=$(PATHPARPE)/build/src/parpeoptimization/libparpeoptimization.a
 LIBPARPE+=$(PATHPARPE)/build/src/parpecommon/libparpecommon.a
 
+LIBPARPE+=-L/usr/lib/x86_k64-linux-gnu   -lboost_system -lboost_serialization -lboost_chrono -lboost_system  -lipopt
+
 LIBPARPE+=-Wl,--end-group
+
+
+LIBLINKER+=-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 
+LIBLINKER+=-L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp
+
 #LIBPARPE+=$(PATHHDF5)/lib/libhdf5_cpp.so
 #LIBPARPE+=$(PATHHDF5)/lib/libhdf5_hl_cpp.so
 #LIBPARPE+=$(PATHHDF5)/lib/libhdf5_hl.so
@@ -345,7 +365,7 @@ SRCFORTRAN+=$(wildcard $(BUILDDIR)/src/method_module_fortran/eSS/funcevalinterfa
 SRCFORTRAN+=$(wildcard $(BUILDDIR)/src/method_module_fortran/eSS/qsort_mod.f90)
 SRCFORTRAN+=$(wildcard $(BUILDDIR)/src/method_module_fortran/eSS/outputhdf5.f90)
 SRCFORTRAN+=$(wildcard $(BUILDDIR)/src/method_module_fortran/eSS/localsolvers/dhc/dhc.f90)
-SRCFORTRAN+=$(wildcard $(BUILDDIR)/src/method_module_fortran/eSS/localsolvers/misqp/misqp_interface.f90)
+#SRCFORTRAN+=$(wildcard $(BUILDDIR)/src/method_module_fortran/eSS/localsolvers/misqp/misqp_interface.f90)
 SRCFORTRAN+=$(wildcard $(BUILDDIR)/src/method_module_fortran/eSS/localsolvers/localsolver.f90)
 SRCFORTRAN+=$(wildcard $(BUILDDIR)/src/method_module_fortran/eSS/scattersearchfunctions.f90)
 SRCFORTRAN+=$(wildcard $(BUILDDIR)/src/method_module_fortran/eSS/localsolvers/localsolverinterfacec.f90)
@@ -375,11 +395,12 @@ INC+=-I$(BUILDDIR)/include/method_module_fortran/
 INC+=-I$(BUILDDIR)/src/method_module_fortran/eSS/
 INC+=-I$(BUILDDIR)/src/method_module_fortran/eSS/localsolvers
 INC+=-I$(BUILDDIR)/src/method_module_fortran/eSS/localsolvers/dhc
-INC+=-I$(BUILDDIR)/src/method_module_fortran/eSS/localsolvers/misqp
+#INC+=-I$(BUILDDIR)/src/method_module_fortran/eSS/localsolvers/misqp
 INC+=-I$(BUILDDIR)/src/method_module_fortran/eSS/localsolvers/nl2sol
 
 INC+=  -I$(LIBRARY)/gsl-1.14 -I$(LIBRARY)/gsl-1.14/include  -I$(LIBRARY)/gsl-1.14/include/gsl
-LIBS+= -L$(LIBRARY)/gsl-1.14/lib -lgsl
+INC+= -I/usr/include/hdf5/serial
+LIBS+= -L$(LIBRARY)/gsl-1.14/lib -lgsl	 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -L/usr/lib/x86_64-linux-gnu
 LIBS+=  -fPIC -DEXPORT #-lAMIGO -fPIC -DEXPORT
 PROG := bin/paralleltestbed
 
@@ -412,15 +433,21 @@ PARPE:
 	else \
 		mkdir $(DIR_Boehm_build) && cd $(DIR_Boehm_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+			-DAmici_DIR=/parPE/deps/AMICI/build \
+	        -DParPE_DIR=/parPE/build/ \
+	        -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+	        -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+	        -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+	        -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+	        -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+	        -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+		-DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+	        -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+	        -DCMAKE_C_COMPILER=/usr/bin/gcc \
+	        -DCMAKE_CXX_COMPILER=/usr/bin/g++  \
+		-DSuiteSparse_DIR=/parPE/deps/AMICI/ThirdParty/SuiteSparse/install \
+		-DCeres_DIR=/usr/lib/x86_64-linux-gnu/cmake/Ceres \
+		-DCMAKE_PREFIX_PATH=/parPE/deps/AMICI/build:/usr/lib/x86_64-linux-gnu/cmake && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Borghans_build)"  ]; then \
@@ -428,15 +455,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Borghans_build) && cd $(DIR_Borghans_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Blasi_build)"  ]; then \
@@ -444,15 +474,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Blasi_build) && cd $(DIR_Blasi_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Crauste_build)"  ]; then \
@@ -460,15 +493,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Crauste_build) && cd $(DIR_Crauste_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Elowitz_build)"  ]; then \
@@ -476,15 +512,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Elowitz_build) && cd $(DIR_Elowitz_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Fujita_build)"  ]; then \
@@ -492,15 +531,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Fujita_build) && cd $(DIR_Fujita_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Sneyd_build)"  ]; then \
@@ -508,15 +550,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Sneyd_build) && cd $(DIR_Sneyd_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Weber_build)"  ]; then \
@@ -524,15 +569,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Weber_build) && cd $(DIR_Weber_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Zheng_build)"  ]; then \
@@ -540,15 +588,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Zheng_build) && cd $(DIR_Zheng_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Bruno_build)"  ]; then \
@@ -556,15 +607,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Bruno_build) && cd $(DIR_Bruno_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Chen_build)"  ]; then \
@@ -572,15 +626,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Chen_build) && cd $(DIR_Chen_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Giordano_build)"  ]; then \
@@ -588,15 +645,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Giordano_build) && cd $(DIR_Giordano_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Giordano_build)"  ]; then \
@@ -604,15 +664,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Giordano_build) && cd $(DIR_Giordano_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Bertozzi_build)"  ]; then \
@@ -620,15 +683,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Bertozzi_build) && cd $(DIR_Bertozzi_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Fiedler_build)"  ]; then \
@@ -636,15 +702,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Fiedler_build) && cd $(DIR_Fiedler_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Laske_build)"  ]; then \
@@ -652,15 +721,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Laske_build) && cd $(DIR_Laske_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Perelson_build)"  ]; then \
@@ -668,15 +740,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Perelson_build) && cd $(DIR_Perelson_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Okuonghae_build)"  ]; then \
@@ -684,15 +759,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Okuonghae_build) && cd $(DIR_Okuonghae_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Rahman_build)"  ]; then \
@@ -700,15 +778,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Rahman_build) && cd $(DIR_Rahman_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_SalazarCavazos_build)"  ]; then \
@@ -716,15 +797,18 @@ PARPE:
 	else \
 		mkdir $(DIR_SalazarCavazos_build) && cd $(DIR_SalazarCavazos_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Schwen_build)"  ]; then \
@@ -732,15 +816,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Schwen_build) && cd $(DIR_Schwen_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Zhao_build)"  ]; then \
@@ -748,15 +835,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Zhao_build) && cd $(DIR_Zhao_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Lucarelli_build)"  ]; then \
@@ -764,15 +854,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Lucarelli_build) && cd $(DIR_Lucarelli_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Oliveira_build)"  ]; then \
@@ -780,15 +873,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Oliveira_build) && cd $(DIR_Oliveira_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Raimundez_build)"  ]; then \
@@ -796,15 +892,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Raimundez_build) && cd $(DIR_Raimundez_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Isensee_build)"  ]; then \
@@ -812,15 +911,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Isensee_build) && cd $(DIR_Isensee_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Brannmark_build)"  ]; then \
@@ -828,15 +930,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Brannmark_build) && cd $(DIR_Brannmark_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Armistead_build)"  ]; then \
@@ -844,15 +949,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Armistead_build) && cd $(DIR_Armistead_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Raia_build)"  ]; then \
@@ -860,15 +968,18 @@ PARPE:
 	else \
 		mkdir $(DIR_Raia_build) && cd $(DIR_Raia_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
 	if [ -d "$(DIR_Smith_build)"  ]; then \
@@ -876,17 +987,39 @@ PARPE:
 	else \
 		mkdir $(DIR_Smith_build) && cd $(DIR_Smith_build) && \
 		cmake .. \
-		-DAmici_DIR=$(PATHPARPE)/deps/AMICI/build \
-		-DParPE_DIR=$(PATHPARPE)/build/ \
-		-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
-		-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
-		-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
-		-DHDF5_DIR=$(PATHHDF5) \
-		-DCMAKE_CXX_FLAGS="-I$(PATHPARPE)/include -I$(PATHPARPE)/include/parpeamici -I$(PATHPARPE)/build/src" \
-		-DHDF5_C_LIBRARY_hdf5=$(PATHHDF5)/lib/libhdf5.so \
-		-DHDF5_C_LIBRARY_hdf5_hl=$(PATHHDF5)/lib/libhdf5_hl.so &&\
+                -DAmici_DIR=/parPE/deps/AMICI/build \
+                -DParPE_DIR=/parPE/build/ \
+                -DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+                -DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+                -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+                -DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+                -DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+                -DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+                -DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+                -DCMAKE_C_COMPILER=/usr/bin/gcc \
+                -DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
 		$(MAKE); \
 	fi
+	if [ -d "$(DIR_Beer_build)"  ]; then \
+		cd $(DIR_Beer_build) && $(MAKE);  \
+	else \
+		mkdir $(DIR_Beer_build) && cd $(DIR_Beer_build) && \
+		cmake .. \
+			-DAmici_DIR=/parPE/deps/AMICI/build \
+			-DParPE_DIR=/parPE/build/ \
+			-DCMAKE_CXX_FLAGS="-I/parPE/include -I/parPE/build/src -I/usr/lib/x86_64-linux-gnu/openmpi/include -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+			-DCMAKE_C_FLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -fopenmp -O3 -I/usr/lib/llvm-18/include" \
+			-DCMAKE_EXE_LINKER_FLAGS="-L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp" \
+			-DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) \
+			-DCMAKE_INCLUDE_PATH=$(CMAKE_INCLUDE_PATH) \
+			-DCMAKE_LIBRARY_PATH=$(CMAKE_LIBRARY_PATH) \
+			-DOpenMP_C_LIB_NAMES="omp" -DOpenMP_CXX_LIB_NAMES="omp" \
+			-DOpenMP_omp_LIBRARY="/usr/lib/llvm-18/lib/libomp.so"\
+			-DCMAKE_C_COMPILER=/usr/bin/gcc \
+			-DCMAKE_CXX_COMPILER=/usr/bin/g++ && \
+		$(MAKE); \
+    fi
 #libAMIGO.a :  $(OBJAMIGO)  
 #	$(CC) $^ -shared -o $(AMIGO_PATH)/lib/libAMIGO.so 
 # $(AR) r $(AMIGO_PATH)/lib/libAMIGO.a $^ $(OBJN2SOLFILES)
@@ -898,8 +1031,8 @@ PARPE:
 	@mv $(BUILDDIR)/*.mod $(BUILDDIR)/include/method_module_fortran/
 	
 $(PROG) : $(OBJFILES)
-        #$(CPP) -o $(PROG) $(MISQP) $(INC) $(INCPARPE) $(BLAS) $(OBJN2SOL) $(OBJB6FILES) $(OBJFILES) $(OBJFORTRANFILES)  $(LIBS) $(CLIBS) $(FLIBS) $(CPARALLEL) $(LIBPARPE) $(CPPFLAGS) $(CFLAGS) $(LIBS1)
-	$(CC) -o $(PROG)$(TERM_PE) $(MISQP) $(INC) $(INCPARPE) $(BLAS) $(OBJN2SOL) $(OBJB6FILES) $(OBJFILES) $(OBJFORTRANFILES)  $(LIBS)  $(CLIBS) $(FLIBS) $(CPARALLEL)  -lm $(LIBPARPE) $(CPPFLAGS) $(CFLAGS) -lstdc++
+        #$(CPP) -o $(PROG) $(MISQP) $(INC) $(INCPARPE) $(BLAS) $(OBJN2SOL) $(OBJB6FILES) $(OBJFILES) $(OBJFORTRANFILES)  $(LIBS) $(CLIBS) $(FLIBS) $(CPARALLEL) $(LIBPARPE) $(CPPFLAGS) $(CFLAGS) $(LIBS1) -L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5 -lhdf5_hl -L/usr/lib/llvm-18/lib -lomp
+	$(CC) -o $(PROG)$(TERM_PE) -frtti $(INC) $(INCPARPE) $(BLAS) $(OBJN2SOL) $(OBJB6FILES) $(OBJFILES) $(OBJFORTRANFILES)  $(LIBS)  $(CLIBS) $(FLIBS) $(CPARALLEL)  -lm $(LIBPARPE) $(CPPFLAGS) $(CFLAGS) -lstdc++ $(LIBLINKER) $(CPARALLEL) 
 
 
 clean :
